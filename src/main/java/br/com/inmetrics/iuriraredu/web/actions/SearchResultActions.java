@@ -22,6 +22,7 @@ public class SearchResultActions extends BaseTest {
     }
 
     public String getProductName(String productName) {
+        WaitUtils.implicitlyWait(getDriver());
         WebElement product = WaitUtils.waitForClickable(getDriver(), searchResultPage.getProductByName(productName, getDriver()));
         return product.getText();
     }

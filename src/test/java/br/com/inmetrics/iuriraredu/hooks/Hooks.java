@@ -1,18 +1,16 @@
 package br.com.inmetrics.iuriraredu.hooks;
 
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
-
 import br.com.inmetrics.iuriraredu.utils.ConfigManager;
 import br.com.inmetrics.iuriraredu.utils.FileManager;
+import io.cucumber.java.After;
 import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
-import io.cucumber.java.After;
 import io.cucumber.java.Scenario;
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.IOException;
-
-import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Classe de hooks do Cucumber para inicialização e finalização de cenários de teste web.

@@ -7,7 +7,10 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
     features = "src/test/resources/features",
-    glue = {"br.com.inmetrics.iuriraredu.steps","br.com.inmetrics.iuriraredu.hooks"},
+    glue = {
+            "br.com.inmetrics.iuriraredu.steps",
+            "br.com.inmetrics.iuriraredu.hooks"
+    },
     plugin = {
         "pretty",
         "html:target/cucumber-reports/cucumber-reports.html",

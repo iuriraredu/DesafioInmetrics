@@ -67,4 +67,8 @@ public class WaitUtils {
                 webDriver -> ((JavascriptExecutor) webDriver)
                         .executeScript("return document.readyState").equals("complete"));
     }
+
+    public static void implicitlyWait(WebDriver driver){
+        driver.manage().timeouts().implicitlyWait(ConfigManager.getWaitPropertyDuration());
+    }
 }
