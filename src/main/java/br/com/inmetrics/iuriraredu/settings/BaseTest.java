@@ -116,13 +116,4 @@ public abstract class BaseTest {
             waitThreadLocal.remove();
         }
     }
-
-    /**
-     * Aguarda o carregamento da página por um número específico de segundos.
-     *
-     * @param seconds Quantidade de segundos para aguardar o carregamento da página
-     */
-    public void waitAnySeconds(int seconds) {
-        WaitUtils.waitForPageLoad(getDriver(), Duration.ofSeconds(seconds));
-    }
 }

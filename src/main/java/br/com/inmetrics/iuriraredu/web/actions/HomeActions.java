@@ -17,29 +17,31 @@ public class HomeActions extends BaseTest {
     }
 
     public void clickOnSearchBtn (){
-        WebElement searchBtn = WaitUtils.waitForClickable(getDriver(), this.homePage.getSearchBtn());
-        searchBtn.click();
+        WaitUtils.implicitlyWait(getDriver());
+        this.homePage.getSearchBtn().click();
     }
 
     public void sendTextOnSearchInput (String text){
-        WebElement searchInput = WaitUtils.waitForClickable(getDriver(), this.homePage.getSearchInput());
+        WaitUtils.implicitlyWait(getDriver());
+        WebElement searchInput = this.homePage.getSearchInput();
         searchInput.sendKeys(text);
         searchInput.sendKeys(Keys.ENTER);
     }
 
     public String getTextLaptop (){
-        WebElement laptopText = WaitUtils.waitForClickable(getDriver(), this.homePage.getLaptopLink());
-        return laptopText.getText();
+        WaitUtils.implicitlyWait(getDriver());
+        return this.homePage.getLaptopLink().getText();
     }
 
     public void closeSearch(){
-        WebElement closeSearchBtn = WaitUtils.waitForClickable(getDriver(), this.homePage.getCloseSearchBtn());
-        getWait().until(ExpectedConditions.elementToBeClickable(closeSearchBtn));
-        ((JavascriptExecutor)getDriver()).executeScript("arguments[0].click();", closeSearchBtn);
+        WaitUtils.implicitlyWait(getDriver());
+        ((JavascriptExecutor)getDriver()).executeScript(
+                "arguments[0].click();", this.homePage.getCloseSearchBtn()
+        );
     }
 
     public void clickOnProductByName(String productName){
-        WebElement product = this.homePage.getProductByName(productName, getDriver());
-        WaitUtils.waitForClickable(getDriver(), product).click();
+        WaitUtils.implicitlyWait(getDriver());
+        this.homePage.getProductByName(productName, getDriver()).click();
     }
 }

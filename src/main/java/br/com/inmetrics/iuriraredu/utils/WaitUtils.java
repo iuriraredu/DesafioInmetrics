@@ -10,23 +10,27 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 /**
- * Classe utilitária para operações de espera explícita em testes automatizados com Selenium WebDriver.
- * Permite aguardar elementos clicáveis e o carregamento completo da página, utilizando configurações de timeout e polling.
+ * Classe utilitária para operações de espera explícita e implícita em testes automatizados com Selenium WebDriver.
+ * Fornece métodos estáticos para aguardar elementos clicáveis, carregamento completo da página e configurar o tempo de espera implícito.
  *
- * <p>Os métodos são estáticos e podem ser utilizados em qualquer contexto de teste.</p>
+ * <p>Utiliza configurações de timeout e polling, permitindo personalização conforme necessidade dos testes.</p>
+ *
+ * <ul>
+ *   <li>{@link #waitForClickable(WebDriver, WebElement)}: Aguarda até que o elemento esteja clicável usando o timeout padrão.</li>
+ *   <li>{@link #waitForClickable(WebDriver, WebElement, Duration)}: Aguarda até que o elemento esteja clicável com timeout customizado.</li>
+ *   <li>{@link #waitForPageLoad(WebDriver, Duration)}: Aguarda o carregamento completo da página.</li>
+ *   <li>{@link #implicitlyWait(WebDriver)}: Configura o tempo de espera implícito do WebDriver.</li>
+ * </ul>
+ *
+ * <p>Os métodos ignoram exceções de referência obsoleta e lançam {@link org.openqa.selenium.TimeoutException} caso a condição não seja atendida no tempo limite.</p>
  */
 public class WaitUtils {
-
-    /** Timeout padrão para operações de espera, definido nas propriedades do projeto. */
-    private static final Duration TIMEOUT = Duration.ofSeconds(
-            Long.parseLong(ConfigManager.getPropertiesValue("wait"))
-    );
 
     /** Intervalo de polling padrão para verificação de condições durante a espera. */
     private static final Duration POLLING = Duration.ofMillis(150);
 
     /**
-     * Aguarda até que o elemento esteja clicável, utilizando o timeout padrão.
+     * Aguarda até que o elemento esteja clicável, utilizando o timeout padrão definido em configuração.
      * Ignora exceções de referência obsoleta do elemento.
      *
      * @param driver  Instância do {@link WebDriver} utilizada na espera.
@@ -35,7 +39,7 @@ public class WaitUtils {
      * @throws org.openqa.selenium.TimeoutException Se o elemento não se tornar clicável dentro do tempo limite.
      */
     public static WebElement waitForClickable(WebDriver driver, WebElement element) {
-        return waitForClickable(driver, element, TIMEOUT);
+        return waitForClickable(driver, element, ConfigManager.getWaitPropertyDuration());
     }
 
     /**
@@ -68,6 +72,11 @@ public class WaitUtils {
                         .executeScript("return document.readyState").equals("complete"));
     }
 
+    /**
+     * Configura o tempo de espera implícito do {@link WebDriver} com o valor definido na configuração.
+     *
+     * @param driver Instância do {@link WebDriver} a ser configurada.
+     */
     public static void implicitlyWait(WebDriver driver){
         driver.manage().timeouts().implicitlyWait(ConfigManager.getWaitPropertyDuration());
     }

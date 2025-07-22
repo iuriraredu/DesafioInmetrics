@@ -9,7 +9,8 @@ import org.junit.runner.RunWith;
     features = "src/test/resources/features",
     glue = {
             "br.com.inmetrics.iuriraredu.steps",
-            "br.com.inmetrics.iuriraredu.hooks"
+            "br.com.inmetrics.iuriraredu.hooks",
+            "br.com.inmetrics.iuriraredu.runner"
     },
     plugin = {
         "pretty",
