@@ -22,11 +22,11 @@
         | Produtos                            |
         | HP ENVY - 17t Touch Laptop          |
         | HP ENVY x360 - 15t Laptop           |
-        | HP Pavilion 15t Touch Laptop        |
-        | HP Pavilion 15z Laptop              |
-        | HP Pavilion 15z Touch Laptop        |
-        | HP Pavilion x360 - 11t Touch Laptop |
-        | HP Stream - 11-d020nr Laptop        |
+#        | HP Pavilion 15t Touch Laptop        |
+#        | HP Pavilion 15z Laptop              |
+#        | HP Pavilion 15z Touch Laptop        |
+#        | HP Pavilion x360 - 11t Touch Laptop |
+#        | HP Stream - 11-d020nr Laptop        |
 
     @web
     Cenario: 02 - Incluir produto no carrinho

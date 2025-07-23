@@ -1,5 +1,7 @@
 package br.com.inmetrics.iuriraredu.utils;
 
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.GLOBAL_TIMEOUT;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.POLLING_INTERVAL;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -26,9 +28,6 @@ import java.time.Duration;
  */
 public class WaitUtils {
 
-    /** Intervalo de polling padrão para verificação de condições durante a espera. */
-    private static final Duration POLLING = Duration.ofMillis(150);
-
     /**
      * Aguarda até que o elemento esteja clicável, utilizando o timeout padrão definido em configuração.
      * Ignora exceções de referência obsoleta do elemento.
@@ -39,7 +38,7 @@ public class WaitUtils {
      * @throws org.openqa.selenium.TimeoutException Se o elemento não se tornar clicável dentro do tempo limite.
      */
     public static WebElement waitForClickable(WebDriver driver, WebElement element) {
-        return waitForClickable(driver, element, ConfigManager.getWaitPropertyDuration());
+        return waitForClickable(driver, element, GLOBAL_TIMEOUT);
     }
 
     /**
@@ -54,7 +53,7 @@ public class WaitUtils {
      */
     public static WebElement waitForClickable(WebDriver driver, WebElement element, Duration timeout) {
         return new WebDriverWait(driver, timeout)
-                .pollingEvery(POLLING)
+                .pollingEvery(POLLING_INTERVAL)
                 .ignoring(StaleElementReferenceException.class)
                 .until(ExpectedConditions.elementToBeClickable(element));
     }
@@ -78,6 +77,6 @@ public class WaitUtils {
      * @param driver Instância do {@link WebDriver} a ser configurada.
      */
     public static void implicitlyWait(WebDriver driver){
-        driver.manage().timeouts().implicitlyWait(ConfigManager.getWaitPropertyDuration());
+        driver.manage().timeouts().implicitlyWait(GLOBAL_TIMEOUT);
     }
 }

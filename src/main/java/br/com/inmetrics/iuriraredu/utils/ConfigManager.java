@@ -16,14 +16,12 @@ import java.util.Properties;
  * <p>Os métodos são estáticos e garantem que o arquivo de propriedades seja carregado apenas uma vez.</p>
  */
 public class ConfigManager {
-    /** Indica se as propriedades já foram carregadas na execução atual. */
-    private static boolean propertiesLoaded = false;
 
-    /** Instância de {@link Properties} utilizada para armazenar os valores carregados. */
     static Properties properties = new Properties();
-
-    /** Caminho padrão do arquivo de propriedades da aplicação. */
+    private static boolean propertiesLoaded = false;
     private static final String PROPERTIES_PATH = "src/test/resources/config/application.properties";
+    public static final Duration GLOBAL_TIMEOUT = Duration.ofSeconds(getPropertiesValueInLong("GLOBAL_TIMEOUT"));
+    public static final Duration POLLING_INTERVAL = Duration.ofSeconds(getPropertiesValueInLong("POLLING_INTERVAL"));
 
     /**
      * Obtém o valor associado a uma chave no arquivo de propriedades.
@@ -69,13 +67,12 @@ public class ConfigManager {
      * @return {@link Duration} correspondente ao valor da propriedade "wait" em segundos, ou 5 segundos se inválido.
      * @throws NumberFormatException Se o valor da propriedade "wait" não puder ser convertido para {@code long} (exceto se capturado internamente).
      */
-    public static Duration getWaitPropertyDuration() {
+    public static long getPropertiesValueInLong(String propertyName) {
         try {
-            return Duration.ofSeconds(
-                    Long.parseLong(getPropertiesValue("wait"))
-            );
+            return Long.parseLong(getPropertiesValue(propertyName));
         } catch (Exception e){
-            return Duration.ofSeconds(5L);
+            System.out.println("Valor inválido para '"+propertyName+"', usando valor padrão de 5 segundos.");
         }
+        return 5L;
     }
 }

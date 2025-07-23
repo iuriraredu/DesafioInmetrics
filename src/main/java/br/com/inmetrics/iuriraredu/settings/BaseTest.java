@@ -1,6 +1,8 @@
 package br.com.inmetrics.iuriraredu.settings;
 
-import br.com.inmetrics.iuriraredu.utils.WaitUtils;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.GLOBAL_TIMEOUT;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.POLLING_INTERVAL;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -8,9 +10,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import io.github.bonigarcia.wdm.WebDriverManager;
-
-import java.time.Duration;
 
 /**
  * Classe base para testes automatizados utilizando Selenium WebDriver.
@@ -22,8 +21,6 @@ import java.time.Duration;
 public abstract class BaseTest {
     private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<WebDriverWait> waitThreadLocal = new ThreadLocal<>();
-    private static final Duration GLOBAL_TIMEOUT = Duration.ofSeconds(30);
-    private static final Duration POLLING_INTERVAL = Duration.ofMillis(300);
 
     /**
      * Retorna a instância atual do {@link WebDriver} para a thread.
