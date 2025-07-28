@@ -1,7 +1,9 @@
 package br.com.inmetrics.iuriraredu.web.actions;
 
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.implicitlyWait;
+
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
-import br.com.inmetrics.iuriraredu.utils.WaitUtils;
 import br.com.inmetrics.iuriraredu.web.pages.ProductPage;
 
 public class ProductActions extends BaseTest {
@@ -16,25 +18,23 @@ public class ProductActions extends BaseTest {
      * Clica no botão de cor vermelha na página do produto.
      */
     public void clickColorButton(String color) {
-        WaitUtils.implicitlyWait(getDriver());
-        productPage.getColorBtn(color, getDriver()).click();
+        implicitlyWait(getDriver());
+//        productPage.getColorBtn(color, getDriver()).click();
+        jsClick(
+                getDriver(), productPage.getColorBtn(color, getDriver())
+        );
     }
 
     /**
      * Clica no botão de adicionar ao carrinho na página do produto.
      */
     public void clickAddToCartButton() {
-        WaitUtils.implicitlyWait(getDriver());
+        implicitlyWait(getDriver());
         productPage.getAddToCartBtn().click();
     }
 
-    /**
-     * Obtém o nome do produto exibido na página do produto.
-     *
-     * @return o nome do produto
-     */
-    public String getProductName() {
-        WaitUtils.implicitlyWait(getDriver());
-        return productPage.getProductName().getText();
+    public void clickCartButton() {
+        implicitlyWait(getDriver());
+        productPage.getCartBtn().click();
     }
 }

@@ -20,8 +20,6 @@ public class ConfigManager {
     static Properties properties = new Properties();
     private static boolean propertiesLoaded = false;
     private static final String PROPERTIES_PATH = "src/test/resources/config/application.properties";
-    public static final Duration GLOBAL_TIMEOUT = Duration.ofSeconds(getPropertiesValueInLong("GLOBAL_TIMEOUT"));
-    public static final Duration POLLING_INTERVAL = Duration.ofSeconds(getPropertiesValueInLong("POLLING_INTERVAL"));
 
     /**
      * Obtém o valor associado a uma chave no arquivo de propriedades.
@@ -70,9 +68,21 @@ public class ConfigManager {
     public static long getPropertiesValueInLong(String propertyName) {
         try {
             return Long.parseLong(getPropertiesValue(propertyName));
-        } catch (Exception e){
-            System.out.println("Valor inválido para '"+propertyName+"', usando valor padrão de 5 segundos.");
+        } catch (Exception e) {
+            System.out.println("Valor inválido para '" + propertyName + "', usando valor padrão de 5 segundos.");
         }
         return 5L;
+    }
+
+    public static Duration getGlobalTimeout() {
+        return Duration.ofSeconds(getPropertiesValueInLong("GLOBAL_TIMEOUT"));
+    }
+
+    public static Duration getPollingInterval() {
+        return Duration.ofSeconds(getPropertiesValueInLong("POLLING_INTERVAL"));
+    }
+
+    public static String getReportsPath() {
+        return getPropertiesValue("reportPath");
     }
 }

@@ -1,6 +1,5 @@
 package br.com.inmetrics.iuriraredu.utils;
 
-import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -10,6 +9,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getReportsPath;
+import static org.apache.commons.io.FileUtils.copyFile;
+import static org.apache.commons.io.FileUtils.forceMkdir;
 
 /**
  * Classe utilitária para operações de arquivos relacionadas a testes automatizados.
@@ -28,12 +31,13 @@ public class FileManager {
         String filePath = null; // Inicializa com null
         try {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String folderPath = "target/screenshots/" + LocalDate.now().toString();
-            filePath = folderPath + "/" + testName + "_" + timestamp + ".png"; // Atribui o caminho aqui
+            String folderPath = getReportsPath() + "/screenshots/" + LocalDate.now().toString();
+            String extension = ".png"; // Define a extensão do arquivo
+            filePath = folderPath + "/" + testName + "_" + timestamp + extension; // Atribui o caminho aqui
 
             File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            FileUtils.forceMkdir(new File(folderPath));
-            FileUtils.copyFile(screenshot, new File(filePath));
+            forceMkdir(new File(folderPath));
+            copyFile(screenshot, new File(filePath));
             System.out.println("Screenshot salvo em: " + filePath); // Adiciona um log para confirmar
         } catch (IOException e) {
             System.err.println("Erro ao tirar screenshot: " + e.getMessage());

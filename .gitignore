@@ -1,39 +1,42 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# === Build / Output folders ===
+/target/
+/build/
+**/src/main/**/target/
+/**/src/test/**/target/
+**/src/main/**/build/
+/**/src/test/**/build/
 
-### IntelliJ IDEA ###
-.idea/*
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Arquivos específicos do IntelliJ
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
-*.iws
-*.iml
-*.ipr
 
-### Eclipse ###
-.apt_generated
+# === Eclipse ===
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
+.settings/
+.factorypath
 .sts4-cache
 
-### NetBeans ###
+# === NetBeans ===
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
 
-### VS Code ###
+# === VS Code ===
 .vscode/
 
-### Mac OS ###
+# === SO: MacOS ===
 .DS_Store
+
+# === Maven Wrapper ===
+!.mvn/wrapper/maven-wrapper.jar

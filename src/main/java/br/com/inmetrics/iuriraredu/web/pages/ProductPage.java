@@ -21,7 +21,11 @@ public class ProductPage {
     private WebElement productName;
 
     public WebElement getColorBtn(String colorName, WebDriver driver) {
-        String xpath = String.format("//span[@title='%s']", colorName.toUpperCase());
-        return driver.findElement(By.xpath(xpath));
+        return driver.findElement(By.xpath(
+                String.format("//span[@title='%s']", colorName.toUpperCase())
+        ));
     }
+
+    @FindBy(xpath = "//a[@id='shoppingCartLink']")
+    private WebElement cartBtn;
 }

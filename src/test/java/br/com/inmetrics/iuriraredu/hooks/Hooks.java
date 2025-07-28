@@ -1,16 +1,16 @@
 package br.com.inmetrics.iuriraredu.hooks;
 
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
-import br.com.inmetrics.iuriraredu.utils.ConfigManager;
 import br.com.inmetrics.iuriraredu.utils.FileManager;
 import io.cucumber.java.After;
-import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPropertiesValue;
+import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 /**
  * Classe de hooks do Cucumber para inicialização e finalização de cenários de teste web.
@@ -21,11 +21,11 @@ public class Hooks extends BaseTest {
      * Inicializa o navegador antes de cenários marcados com {@code @web}.
      */
     @Before(value = "@web")
-    public void initWebApplication(){
+    public void initWebApplication() {
         System.out.println("🔧 Iniciando o cenário de teste...");
-        browserSetUp(
-                ConfigManager.getPropertiesValue("browser"),
-                ConfigManager.getPropertiesValue("BASEURLWEB")
+        super.browserSetUp(
+                getPropertiesValue("browser"),
+                getPropertiesValue("BASEURLWEB")
         );
     }
 
@@ -36,16 +36,23 @@ public class Hooks extends BaseTest {
      * @param scenario Instância do cenário em execução
      */
     @After(value = "@web")
-    public void finishWebApplication(Scenario scenario){
+    public void finishWebApplication(Scenario scenario) {
         try {
             String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
-            scenario.attach(FileUtils.readFileToByteArray(new File(screenshotPath)), "image/png", "Screenshot");
+            if (screenshotPath != null) {
+                scenario.attach(readFileToByteArray(
+                        new File(screenshotPath)),
+                        "image/png",
+                        "Screenshot"
+                );
+            } else {
+                System.err.println("Screenshot não foi capturado.");
+            }
         } catch (IOException e) {
             System.err.println("Erro ao capturar screenshot: " + e.getMessage());
         }
 
-        browserTearDown();
+        super.browserTearDown();
         System.out.println("🧹 Finalizando o cenário de teste...");
     }
-
 }

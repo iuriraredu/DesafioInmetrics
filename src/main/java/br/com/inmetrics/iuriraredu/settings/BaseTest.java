@@ -1,7 +1,8 @@
 package br.com.inmetrics.iuriraredu.settings;
 
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.GLOBAL_TIMEOUT;
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.POLLING_INTERVAL;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -69,7 +70,7 @@ public abstract class BaseTest {
      * Configura o driver, maximizando a janela e acessando a URL base.
      *
      * @param driver Instância do WebDriver a ser configurada
-     * @param url URL base a ser acessada
+     * @param url    URL base a ser acessada
      */
     private void configureDriver(WebDriver driver, String url) {
         driver.manage().window().maximize();
@@ -84,7 +85,7 @@ public abstract class BaseTest {
      * @return Nova instância de WebDriverWait
      */
     private WebDriverWait createWebDriverWait(WebDriver driver) {
-        return (WebDriverWait) new WebDriverWait(driver, GLOBAL_TIMEOUT, POLLING_INTERVAL)
+        return (WebDriverWait) new WebDriverWait(driver, getGlobalTimeout(), getPollingInterval())
                 .ignoring(StaleElementReferenceException.class)
                 .ignoring(NoSuchElementException.class);
     }
@@ -93,7 +94,7 @@ public abstract class BaseTest {
      * Inicializa o navegador, configura o driver e o WebDriverWait para a thread atual.
      *
      * @param browser Nome do navegador a ser utilizado
-     * @param url URL base para navegação inicial
+     * @param url     URL base para navegação inicial
      */
     protected void browserSetUp(String browser, String url) {
         WebDriver driver = createDriver(browser);

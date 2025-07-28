@@ -82,7 +82,6 @@
         </dependency>
 
 
-
         <!-- WebDriverManager -->
         <!-- https://github.com/bonigarcia/webdrivermanager / https://bonigarcia.dev/webdrivermanager/ -->
         <dependency>
@@ -119,6 +118,13 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.38</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -131,8 +137,13 @@
                     <includes>
                         <include>**/RunTest.java</include>
                     </includes>
+                    <systemPropertyVariables>
+                        <cucumber.publish.quiet>true</cucumber.publish.quiet>
+                        <cucumber.plugin>pretty</cucumber.plugin>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>
