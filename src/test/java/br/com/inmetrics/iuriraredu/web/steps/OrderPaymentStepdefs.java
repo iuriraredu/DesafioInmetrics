@@ -1,4 +1,4 @@
-package br.com.inmetrics.iuriraredu.steps;
+package br.com.inmetrics.iuriraredu.web.steps;
 
 import br.com.inmetrics.iuriraredu.web.actions.OrderPaymentActions;
 import io.cucumber.datatable.DataTable;

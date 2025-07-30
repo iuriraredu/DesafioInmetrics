@@ -4,13 +4,13 @@
 #date: 15/07/2025
 #version: 1.0
 
+@web
 Funcionalidade: Carrinho de compras
 
   Eu como usuário do site Advantage Online Shopping
   Quero buscar produtos e colocá-los no carrinho
   Para realizar um compra
 
-  @web
   Esquema do Cenario: 01 - Realize a busca de um produto
     Dado que estou na página inicial com o campo de busca ativo
     Quando digito o nome do produto "LAPTOP"
@@ -27,7 +27,7 @@ Funcionalidade: Carrinho de compras
 #      | HP Pavilion x360 - 11t Touch Laptop |
 #      | HP Stream - 11-d020nr Laptop        |
 
-  @web
+
   Cenario: 02 - Incluir produto no carrinho
     Dado que navego até a página do produto "HP Stream - 11-d020nr Laptop"
     E seleciono a opção de cor "BLUE"
@@ -35,7 +35,7 @@ Funcionalidade: Carrinho de compras
     E clico no icone do carrinho de compras
     Então confirmo que o produto "HP STREAM - 11-D020NR LAPTOP" foi adicionado ao carrinho
 
-  @web
+
   Cenario: 03 - Validar os produtos incluídos no carrinho na tela de pagamento
     Dado que adicionei os seguintes produtos ao carrinho:
       | HP ENVY - 17t Touch Laptop   |

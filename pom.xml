@@ -23,9 +23,27 @@
         <annotations.version>26.0.2</annotations.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.3.0</maven-surefire-plugin.version>
+        <rest-assured.version>5.5.5</rest-assured.version>
+        <jackson-databind.version>2.19.2</jackson-databind.version>
     </properties>
 
     <dependencies>
+        <!-- REST Assured -->
+        <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+
+        <!-- JSON support -->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+
         <!-- Selenium -->
         <!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
         <dependency>
@@ -107,7 +125,6 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <!-- https://maven.apache.org/plugins/maven-compiler-plugin/ -->
@@ -127,7 +144,6 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-
             <!-- https://maven.apache.org/plugins/maven-surefire-plugin/ -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -145,5 +161,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

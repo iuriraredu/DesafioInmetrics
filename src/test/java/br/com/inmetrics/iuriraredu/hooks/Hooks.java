@@ -29,6 +29,14 @@ public class Hooks extends BaseTest {
         );
     }
 
+    @Before(value = "@api")
+    public void initApiApplication() {
+        System.out.println("🔧 Iniciando o cenário de teste API...");
+        super.apiSetUp(
+                getPropertiesValue("BASEURLAPI")
+        );
+    }
+
     /**
      * Finaliza o navegador após cenários marcados com {@code @web}.
      * Captura e anexa um screenshot ao relatório do cenário.
@@ -41,7 +49,7 @@ public class Hooks extends BaseTest {
             String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
             if (screenshotPath != null) {
                 scenario.attach(readFileToByteArray(
-                        new File(screenshotPath)),
+                                new File(screenshotPath)),
                         "image/png",
                         "Screenshot"
                 );
@@ -54,5 +62,11 @@ public class Hooks extends BaseTest {
 
         super.browserTearDown();
         System.out.println("🧹 Finalizando o cenário de teste...");
+    }
+
+    @After(value = "@api")
+    public void finishApiApplication() {
+        super.apiTearDown();
+        System.out.println("🧹 Finalizando o cenário de teste API...");
     }
 }
