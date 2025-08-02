@@ -13,8 +13,19 @@ import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPropertiesValue
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 /**
- * Classe de hooks do Cucumber para inicialização e finalização de cenários de teste web.
- * Estende {@link BaseTest} para gerenciar o ciclo de vida do WebDriver.
+ * Hooks do Cucumber para inicialização e finalização de cenários de teste web e API.
+ *
+ * <p>Responsável por:</p>
+ * <ul>
+ *   <li>Inicializar o navegador e acessar a URL base antes de cenários marcados com <b>@web</b></li>
+ *   <li>Inicializar contexto de testes de API antes de cenários marcados com <b>@api</b></li>
+ *   <li>Capturar e anexar screenshot ao relatório após cenários <b>@web</b></li>
+ *   <li>Finalizar o navegador ou contexto de API após execução dos cenários</li>
+ * </ul>
+ *
+ * <p>Utiliza propriedades de configuração para browser e URL base. Estende {@link BaseTest} para gerenciar o ciclo de vida do WebDriver e API.</p>
+ *
+ * <p>Os métodos são executados automaticamente pelo Cucumber, de acordo com as tags definidas nos cenários.</p>
  */
 public class Hooks extends BaseTest {
     /**
@@ -25,15 +36,7 @@ public class Hooks extends BaseTest {
         System.out.println("🔧 Iniciando o cenário de teste...");
         super.browserSetUp(
                 getPropertiesValue("browser"),
-                getPropertiesValue("BASEURLWEB")
-        );
-    }
-
-    @Before(value = "@api")
-    public void initApiApplication() {
-        System.out.println("🔧 Iniciando o cenário de teste API...");
-        super.apiSetUp(
-                getPropertiesValue("BASEURLAPI")
+                getPropertiesValue("BASEURL")
         );
     }
 
@@ -64,6 +67,20 @@ public class Hooks extends BaseTest {
         System.out.println("🧹 Finalizando o cenário de teste...");
     }
 
+    /**
+     * Inicializa o contexto de testes de API antes de cenários marcados com {@code @api}, configurando a URL base.
+     */
+    @Before(value = "@api")
+    public void initApiApplication() {
+        System.out.println("🔧 Iniciando o cenário de teste API...");
+        super.apiSetUp(
+                getPropertiesValue("BASEURL")
+        );
+    }
+
+    /**
+     * Finaliza o contexto de testes de API de cenários marcados com {@code @api} e realiza limpezas necessárias.
+     */
     @After(value = "@api")
     public void finishApiApplication() {
         super.apiTearDown();

@@ -1,4 +1,4 @@
-package br.com.inmetrics.iuriraredu.web.steps;
+package br.com.inmetrics.iuriraredu.steps.web;
 
 import br.com.inmetrics.iuriraredu.web.actions.HomeActions;
 import br.com.inmetrics.iuriraredu.web.actions.ProductActions;
