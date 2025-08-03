@@ -1,0 +1,1315 @@
+{
+	"info": {
+		"_postman_id": "9fefc284-c153-4283-a38d-855c8e71848e",
+		"name": "Desafio Inmetrics",
+		"description": "# Desafio API:\n\n- Documentação de todas APIs:\n    \n    - [https://www.advantageonlineshopping.com/api/docs/](https://www.advantageonlineshopping.com/api/docs/)\n        \n- Criar um cenário que procure por um produto (GET) e traga apenas eles:\n    \n    - API: [https://www.advantageonlineshopping.com/catalog/api/v1/products/search](https://www.advantageonlineshopping.com/catalog/api/v1/products/search)\n        \n\n<img src=\"https://content.pstmn.io/577e364d-bd36-4e70-b3aa-015132bbef19/aW1hZ2UucG5n\" width=\"827\" height=\"78\">\n\n- Criar um cenário que atualize a imagem de um produto (POST) verificando  \n    se foi gerado um id para a nova imagem:\n    \n    - API: [https://www.advantageonlineshopping.com/catalog/api/v1/product/image/{userId}/{source}/{color}](https://www.advantageonlineshopping.com/catalog/api/v1/product/image/%7BuserId%7D/%7Bsource%7D/%7Bcolor%7D)\n        \n\n<img src=\"https://content.pstmn.io/7a904dc8-26bb-49bb-89a6-b2e4c2f1343e/aW1hZ2UucG5n\" width=\"925\" height=\"60\">\n\n- OBS:\n    \n    - Será necessário fazer a autenticação de um usuário com ‘accountType: ADMIN’ antes de atualizar a imagem de um produto. Caso não tenha um usuário crie um. Todas as apis necessárias estão na documentação.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14980019",
+		"_collection_link": "https://orange-eclipse-807969.postman.co/workspace/Desafio-Inmetrics~8160b552-d514-4da8-817e-3dbf4a408217/collection/14980019-9fefc284-c153-4283-a38d-855c8e71848e?action=share&source=collection_link&creator=14980019"
+	},
+	"item": [
+		{
+			"name": "accountservice.war",
+			"item": [
+				{
+					"name": "01 - Register",
+					"item": [
+						{
+							"name": "/accountrest/api/v1/register",
+							"item": [
+								{
+									"name": "Create a new User account",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"// Função para gerar senha forte\r",
+													"function generateStrongPassword(length = 8) {\r",
+													"    const chars = {\r",
+													"        lowercase: 'abcdefghijklmnopqrstuvwxyz',\r",
+													"        uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',\r",
+													"        numbers: '0123456789',\r",
+													"        symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'\r",
+													"    };\r",
+													"    \r",
+													"    let password = '';\r",
+													"    // Garante pelo menos 1 caractere de cada tipo\r",
+													"    password += chars.lowercase.charAt(Math.floor(Math.random() * chars.lowercase.length));\r",
+													"    password += chars.uppercase.charAt(Math.floor(Math.random() * chars.uppercase.length));\r",
+													"    password += chars.numbers.charAt(Math.floor(Math.random() * chars.numbers.length));\r",
+													"    password += chars.symbols.charAt(Math.floor(Math.random() * chars.symbols.length));\r",
+													"    \r",
+													"    // Preenche o restante da senha com caracteres aleatórios\r",
+													"    const allChars = chars.lowercase + chars.uppercase + chars.numbers + chars.symbols;\r",
+													"    for (let i = password.length; i < length; i++) {\r",
+													"        password += allChars.charAt(Math.floor(Math.random() * allChars.length));\r",
+													"    }\r",
+													"    \r",
+													"    // Embaralha a senha para não ter padrão fixo\r",
+													"    return password.split('').sort(() => 0.5 - Math.random()).join('');\r",
+													"}\r",
+													"// Gera dados aleatórios para registro\r",
+													"function getRandomUser() {\r",
+													"    const timestamp = new Date().getTime();\r",
+													"    const randomId = Math.floor(Math.random() * 10000);\r",
+													"    \r",
+													"    let firstName = [\"João\", \"Maria\", \"Carlos\", \"Ana\"][Math.floor(Math.random() * 4)]\r",
+													"    let lastName = [\"Silva\", \"Oliveira\", \"Costa\", \"Ferreira\"][Math.floor(Math.random() * 4)]\r",
+													"    return {\r",
+													"        accountType: \"USER\",\r",
+													"        address: `Rua ${randomId}, ${Math.floor(Math.random() * 1000)}`,\r",
+													"        allowOffersPromotion: true, // 50% de chance\r",
+													"        aobUser: true,\r",
+													"        cityName: [\"São Paulo\", \"Rio de Janeiro\", \"Belo Horizonte\", \"Porto Alegre\"][Math.floor(Math.random() * 4)],\r",
+													"        country: \"BRAZIL_BR\",\r",
+													"        email: lastName + firstName + timestamp.toString().slice(-3) + `@test.com`,\r",
+													"        firstName: firstName,\r",
+													"        lastName: lastName,\r",
+													"        loginName: lastName + firstName + timestamp.toString().slice(-3),\r",
+													"        password: generateStrongPassword(), // Senha@1234\r",
+													"        phoneNumber: `119${Math.floor(10000000 + Math.random() * 90000000)}`,\r",
+													"        stateProvince: [\"SP\", \"RJ\", \"MG\", \"RS\"][Math.floor(Math.random() * 4)],\r",
+													"        zipcode: `${Math.floor(10000 + Math.random() * 90000)}000`\r",
+													"    };\r",
+													"}\r",
+													"\r",
+													"// Gera e armazena os dados\r",
+													"const userData = getRandomUser();\r",
+													"pm.collectionVariables.set(\"currentUser\", JSON.stringify(userData));\r",
+													"\r",
+													"// Define os valores individuais também para fácil acesso\r",
+													"Object.keys(userData).forEach(key => {\r",
+													"    pm.collectionVariables.set(`user_${key}`, userData[key]);\r",
+													"});\r",
+													"\r",
+													"console.log(\"Novo usuário gerado:\", userData);"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code retornou 200\", function () {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{{currentUser}}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/accountservice/accountrest/api/v1/register",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"accountservice",
+												"accountrest",
+												"api",
+												"v1",
+												"register"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "02 - Login",
+					"item": [
+						{
+							"name": "/accountrest/api/v1/login",
+							"item": [
+								{
+									"name": "Login to AOS",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const resp = pm.response;\r",
+													"const response = resp.json().statusMessage;\r",
+													"\r",
+													"if (response.token) pm.collectionVariables.set(\"token\", response.token);\r",
+													"if (response.sessionId) pm.collectionVariables.set(\"userId\", response.userId);\r",
+													"\r",
+													"pm.test(\"✅ Status code igual a 200\", () => resp.to.have.status(200));\r",
+													"\r",
+													"pm.test(\"✅ Campos obrigatórios existem\", () => {\r",
+													"    const requiredFields = ['success', 'userId', 'reason', 'token', 'sessionId'];\r",
+													"    requiredFields.forEach(field => {\r",
+													"        pm.expect(response, `Campo '${field}' está faltando`).to.have.property(field);\r",
+													"    });\r",
+													"});\r",
+													"\r",
+													"pm.test(\"✅ Tipos e valores estão corretos\", () => {\r",
+													"    pm.expect(response.success, \"'success' deve ser true\").to.be.true;\r",
+													"    pm.expect(response.userId, \"'userId' deve ser número positivo\").to.be.a('number').and.to.be.above(0);\r",
+													"    pm.expect(response.reason, \"'reason' não pode estar vazio\").to.be.a('string').and.not.to.be.empty;\r",
+													"    pm.expect(response.token, \"'token' inválido\").to.be.a('string').and.to.match(/^eyJ/);\r",
+													"    pm.expect(response.sessionId, \"'sessionId' inválido\").to.be.a('string').and.to.include('@');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"{{user_email}}\",\n  \"loginPassword\": \"{{user_password}}\",\n  \"loginUser\": \"{{user_loginName}}\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseURL}}/accountservice/accountrest/api/v1/login",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"accountservice",
+												"accountrest",
+												"api",
+												"v1",
+												"login"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			],
+			"description": "Modulo de"
+		},
+		{
+			"name": "catalog.war",
+			"item": [
+				{
+					"name": "Search product by Name",
+					"item": [
+						{
+							"name": "​/api​/v1​/products​/search",
+							"item": [
+								{
+									"name": "200 - Busca todos os produtos com o nome 'HP Stream - 11-d020nr Laptop'",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"const [category] = response;\r",
+													"const [product] = category.products;\r",
+													"\r",
+													"pm.test(\"Status code retornou 200\", () =>  {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Retornou exatamente 1 categoria\", () => {\r",
+													"    pm.expect(response).to.be.an('array').with.lengthOf(1);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura da categoria completa\", () => {\r",
+													"    pm.expect(category).to.be.an('object').with.all.keys(\r",
+													"        'categoryId',\r",
+													"        'categoryName',\r",
+													"        'categoryImageId',\r",
+													"        'products'\r",
+													"    );\r",
+													"    \r",
+													"    pm.expect(category.categoryId).to.be.a('number');\r",
+													"    pm.expect(category.categoryName).to.be.a('string').that.is.not.empty;\r",
+													"    pm.expect(category.categoryImageId).to.be.a('string').that.is.not.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Apenas 1 produto retornado\", () => {\r",
+													"    pm.expect(category.products).to.be.an('array').with.lengthOf(1);\r",
+													"    \r",
+													"    pm.expect(product).to.be.an('object').with.all.keys(\r",
+													"        'productId',\r",
+													"        'categoryId',\r",
+													"        'productName',\r",
+													"        'price',\r",
+													"        'imageUrl'\r",
+													"    );\r",
+													"\r",
+													"    pm.expect(product.productId).to.be.a('number');\r",
+													"    pm.expect(product.categoryId).to.be.a('number');\r",
+													"    pm.expect(product.productName).to.be.a('string').that.is.not.empty;\r",
+													"    pm.expect(product.price).to.be.a('number').that.is.above(0);\r",
+													"    pm.expect(product.imageUrl).to.be.a('string').that.is.not.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"✅ Categoria do produto coincide\", () => {\r",
+													"    pm.expect(product.categoryId).to.equal(category.categoryId);\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"produto_a_ser_buscado\", \"HP Stream - 11-d020nr Laptop\");\r",
+													"pm.collectionVariables.set('qtd_produtos_por_categoria', -1)"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/products/search?name={{produto_a_ser_buscado}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"products",
+												"search"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "{{produto_a_ser_buscado}}",
+													"description": "Nome do produto a ser consultado"
+												},
+												{
+													"key": "quantityPerEachCategory",
+													"value": "{{qtd_produtos_por_categoria}}",
+													"description": "Quantidade de Produtos por Categoria a ser exibido na busca (-1 para retornar todos)",
+													"disabled": true
+												}
+											]
+										},
+										"description": "Teste realizados com os seguintes parametros:\n\n- name = HP Stream - 11-d020nr Laptop\n    \n- quantityPerEachCategory = -1\n    \n\n**Obs**.: quando o parametro '_quantityPerEachCategory_' recebe '_\\-1_', indica que deve retornar todos os produtos com o nome buscado."
+									},
+									"response": []
+								},
+								{
+									"name": "200 - Busca apenas 1 produto com o nome 'Game Of Thrones'",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"const [category] = response;\r",
+													"const [product] = category.products;\r",
+													"\r",
+													"pm.test(\"Status code retornou 200\", () =>  {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"if (product && product.productId) pm.collectionVariables.set(\"productId_para_alterar_imagem\", product.productId);\r",
+													"\r",
+													"pm.test(\"Retornou exatamente 1 categoria\", () => {\r",
+													"    pm.expect(response).to.be.an('array').with.lengthOf(1);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura da categoria completa\", () => {\r",
+													"    pm.expect(category).to.be.an('object').with.all.keys(\r",
+													"        'categoryId',\r",
+													"        'categoryName',\r",
+													"        'categoryImageId',\r",
+													"        'products'\r",
+													"    );\r",
+													"    \r",
+													"    pm.expect(category.categoryId).to.be.a('number');\r",
+													"    pm.expect(category.categoryName).to.be.a('string').that.is.not.empty;\r",
+													"    pm.expect(category.categoryImageId).to.be.a('string').that.is.not.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Apenas 1 produto retornado\", () => {\r",
+													"    pm.expect(category.products).to.be.an('array').with.lengthOf(1);\r",
+													"    \r",
+													"    pm.expect(product).to.be.an('object').with.all.keys(\r",
+													"        'productId',\r",
+													"        'categoryId',\r",
+													"        'productName',\r",
+													"        'price',\r",
+													"        'imageUrl'\r",
+													"    );\r",
+													"\r",
+													"    pm.expect(product.productId).to.be.a('number');\r",
+													"    pm.expect(product.categoryId).to.be.a('number');\r",
+													"    pm.expect(product.productName).to.be.a('string').that.is.not.empty;\r",
+													"    pm.expect(product.price).to.be.a('number').that.is.above(0);\r",
+													"    pm.expect(product.imageUrl).to.be.a('string').that.is.not.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Categoria do produto coincide\", () => {\r",
+													"    pm.expect(product.categoryId).to.equal(category.categoryId);\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"produto_a_ser_buscado\", \"game of thrones\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/products/search?name={{produto_a_ser_buscado}}&quantityPerEachCategory=1",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"products",
+												"search"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "{{produto_a_ser_buscado}}",
+													"description": "Nome do produto a ser consultado"
+												},
+												{
+													"key": "quantityPerEachCategory",
+													"value": "1",
+													"description": "Quantidade de Produtos por Categoria a ser exibido na busca (-1 para retornar todos)"
+												}
+											]
+										},
+										"description": "Teste realizados com os seguintes parametros:\n\n- name = game of thrones\n    \n- quantityPerEachCategory = 1\n    \n\n**Obs**.: quando o parametro '_quantityPerEachCategory_' recebe '_\\-1_', indica que deve retornar todos os produtos com o nome buscado."
+									},
+									"response": []
+								},
+								{
+									"name": "200 - Busca 10 produtos com o nome 'Game Of Thrones'",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"const [category] = response;\r",
+													"const qtd = pm.collectionVariables.get('qtd_produtos_por_categoria');\r",
+													"\r",
+													"pm.test(\"Status code retornou 200\", () =>  {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Retornou exatamente \" + qtd + \" produtos\", () => {\r",
+													"    pm.expect(category.products).to.be.an('array').with.lengthOf(qtd);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura da categoria retornou completa\", () => {\r",
+													"    pm.expect(category).to.be.an('object').with.all.keys(\r",
+													"        'categoryId',\r",
+													"        'categoryName',\r",
+													"        'categoryImageId',\r",
+													"        'products'\r",
+													"    );\r",
+													"    \r",
+													"    pm.expect(category.categoryId).to.be.a('number');\r",
+													"    pm.expect(category.categoryName).to.be.a('string').that.is.not.empty;\r",
+													"    pm.expect(category.categoryImageId).to.be.a('string').that.is.not.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura de produto retornou completa e correta\", () => {\r",
+													"    category.products.forEach(product => {\r",
+													"        pm.expect(product).to.be.an('object').with.all.keys(\r",
+													"            'productId',\r",
+													"            'categoryId',\r",
+													"            'productName',\r",
+													"            'price',\r",
+													"            'imageUrl'\r",
+													"        );  \r",
+													"\r",
+													"        pm.expect(product.productId).to.be.a('number');\r",
+													"        pm.expect(product.categoryId).to.be.a('number');\r",
+													"        pm.expect(product.productName).to.be.a('string').that.is.not.empty;\r",
+													"        pm.expect(product.price).to.be.a('number').that.is.above(0);\r",
+													"        pm.expect(product.imageUrl).to.be.a('string').that.is.not.empty;\r",
+													"        pm.expect(product.categoryId).to.equal(category.categoryId);\r",
+													"    });\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"produto_a_ser_buscado\", \"game of thrones\");\r",
+													"pm.collectionVariables.set('qtd_produtos_por_categoria', 10)"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/products/search?name={{produto_a_ser_buscado}}&quantityPerEachCategory={{qtd_produtos_por_categoria}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"products",
+												"search"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "{{produto_a_ser_buscado}}",
+													"description": "Nome do produto a ser consultado"
+												},
+												{
+													"key": "quantityPerEachCategory",
+													"value": "{{qtd_produtos_por_categoria}}",
+													"description": "Quantidade de Produtos por Categoria a ser exibido na busca (-1 para retornar todos)"
+												}
+											]
+										},
+										"description": "Teste realizados com os seguintes parametros:\n\n- name = game of thrones\n    \n- quantityPerEachCategory = 10\n    \n\n**Obs**.: quando o parametro '_quantityPerEachCategory_' recebe '_\\-1_', indica que deve retornar todos os produtos com o nome buscado."
+									},
+									"response": []
+								},
+								{
+									"name": "200 - Busca todos os produtos com o nome 'Game Of Thrones'",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"const [category] = response;\r",
+													"const qtd = category.products.length;\r",
+													"\r",
+													"pm.test(\"Status code retornou 200\", () =>  {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Retornou todos os \" + qtd + \" produtos com o nome buscado\", () => {\r",
+													"    pm.expect(category.products).to.be.an('array').with.lengthOf(qtd);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura da categoria retornou completa\", () => {\r",
+													"    pm.expect(category).to.be.an('object').with.all.keys(\r",
+													"        'categoryId',\r",
+													"        'categoryName',\r",
+													"        'categoryImageId',\r",
+													"        'products'\r",
+													"    );\r",
+													"    \r",
+													"    pm.expect(category.categoryId).to.be.a('number');\r",
+													"    pm.expect(category.categoryName).to.be.a('string').that.is.not.empty;\r",
+													"    pm.expect(category.categoryImageId).to.be.a('string').that.is.not.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura de produto retornou completa e correta\", () => {\r",
+													"    category.products.forEach(product => {\r",
+													"        pm.expect(product).to.be.an('object').with.all.keys(\r",
+													"            'productId',\r",
+													"            'categoryId',\r",
+													"            'productName',\r",
+													"            'price',\r",
+													"            'imageUrl'\r",
+													"        );  \r",
+													"\r",
+													"        pm.expect(product.productId).to.be.a('number');\r",
+													"        pm.expect(product.categoryId).to.be.a('number');\r",
+													"        pm.expect(product.productName).to.be.a('string').that.is.not.empty;\r",
+													"        pm.expect(product.price).to.be.a('number').that.is.above(0);\r",
+													"        pm.expect(product.imageUrl).to.be.a('string').that.is.not.empty;\r",
+													"        pm.expect(product.categoryId).to.equal(category.categoryId);\r",
+													"    });\r",
+													"});\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"produto_a_ser_buscado\", \"game of thrones\");\r",
+													"pm.collectionVariables.set('qtd_produtos_por_categoria', -1)"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/products/search?name={{produto_a_ser_buscado}}&quantityPerEachCategory={{qtd_produtos_por_categoria}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"products",
+												"search"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "{{produto_a_ser_buscado}}",
+													"description": "Nome do produto a ser consultado"
+												},
+												{
+													"key": "quantityPerEachCategory",
+													"value": "{{qtd_produtos_por_categoria}}",
+													"description": "Quantidade de Produtos por Categoria a ser exibido na busca (-1 para retornar todos)"
+												}
+											]
+										},
+										"description": "Teste realizados com os seguintes parametros:\n\n- name = game of thrones\n    \n- quantityPerEachCategory = -1\n    \n\n**Obs**.: quando o parametro '_quantityPerEachCategory_' recebe '_\\-1_', indica que deve retornar todos os produtos com o nome buscado."
+									},
+									"response": []
+								},
+								{
+									"name": "404 - Not Found",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code retornou 404\", () => {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"✅ Resposta é HTML de erro\", () => {\r",
+													"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");\r",
+													"    \r",
+													"    const body = pm.response.text();\r",
+													"    pm.expect(body).to.include(\"<title>HTTP Status 404 ? Not Found</title>\");\r",
+													"    pm.expect(body).to.include(\"The requested resource\");\r",
+													"    pm.expect(body).to.include(\"is not available\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"produto_a_ser_buscado\", \"HP Stream - 11-d020nr Laptop\");\r",
+													"pm.collectionVariables.set('qtd_produtos_por_categoria', -1)"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": " Bearer 1223",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/products/search/notfound?name={{produto_a_ser_buscado}}&quantityPerEachCategory={{qtd_produtos_por_categoria}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"products",
+												"search",
+												"notfound"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "{{produto_a_ser_buscado}}",
+													"description": "Nome do produto a ser consultado"
+												},
+												{
+													"key": "quantityPerEachCategory",
+													"value": "{{qtd_produtos_por_categoria}}",
+													"description": "Quantidade de Produtos por Categoria a ser exibido na busca (-1 para retornar todos)"
+												}
+											]
+										},
+										"description": "Teste realizados com os seguintes parametros:\n\n- name = HP Stream - 11-d020nr Laptop\n    \n- quantityPerEachCategory = -1\n    \n\n**Obs**.: quando o parametro '_quantityPerEachCategory_' recebe '_\\-1_', indica que deve retornar todos os produtos com o nome buscado."
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Upload a new image to a product",
+					"item": [
+						{
+							"name": "/api/v1/product/image/{userId}/{source}/{color}",
+							"item": [
+								{
+									"name": "200 - OK",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Status code retornou 200\", () => {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura do response válida e dados corretos\", () => {\r",
+													"    pm.expect(response).to.be.an('object').that.includes.all.keys(\r",
+													"        'success',\r",
+													"        'id',\r",
+													"        'reason',\r",
+													"        'imageId',\r",
+													"        'imageColor'\r",
+													"    );\r",
+													"    pm.expect(response.success).to.be.a('boolean');\r",
+													"    pm.expect(response.id).to.be.a('number').and.to.be.above(0);\r",
+													"    pm.expect(response.reason).to.be.a('string').and.not.to.be.empty;\r",
+													"    pm.expect(response.imageId).to.be.a('string').and.to.include('custom_image_');\r",
+													"    pm.expect(response.imageColor).to.be.a('string').and.not.to.be.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Resposta indica sucesso\", () => {\r",
+													"    pm.expect(response.success).to.be.true;\r",
+													"    pm.expect(response.reason.toLowerCase()).to.include('success');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"source_path\", \"got.jpg\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{token}}"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"contentType": "image/png",
+													"type": "file",
+													"src": "/C:/Users/iuriraredu/Documents/GitHub/DesafioInmetrics/src/test/resources/images/got.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/product/image/:{userId}/:{source }/:{color}?product_id={{productId_para_alterar_imagem}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"product",
+												"image",
+												":{userId}",
+												":{source }",
+												":{color}"
+											],
+											"query": [
+												{
+													"key": "product_id",
+													"value": "{{productId_para_alterar_imagem}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "{userId}",
+													"value": "{{userId}}"
+												},
+												{
+													"key": "{source }",
+													"value": "{{source_path}}"
+												},
+												{
+													"key": "{color}",
+													"value": "{{color}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "401 - ainda preciso fazer",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Status code retornou 200\", () => {\r",
+													"    pm.response.to.have.status(200);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura do response válida e dados corretos\", () => {\r",
+													"    pm.expect(response).to.be.an('object').that.includes.all.keys(\r",
+													"        'success',\r",
+													"        'id',\r",
+													"        'reason',\r",
+													"        'imageId',\r",
+													"        'imageColor'\r",
+													"    );\r",
+													"    pm.expect(response.success).to.be.a('boolean');\r",
+													"    pm.expect(response.id).to.be.a('number').and.to.be.above(0);\r",
+													"    pm.expect(response.reason).to.be.a('string').and.not.to.be.empty;\r",
+													"    pm.expect(response.imageId).to.be.a('string').and.to.include('custom_image_');\r",
+													"    pm.expect(response.imageColor).to.be.a('string').and.not.to.be.empty;\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Resposta indica sucesso\", () => {\r",
+													"    pm.expect(response.success).to.be.true;\r",
+													"    pm.expect(response.reason.toLowerCase()).to.include('success');\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"source_path\", \"got.jpg\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{token}}"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"contentType": "image/png",
+													"type": "file",
+													"src": "/C:/Users/iuriraredu/Documents/GitHub/DesafioInmetrics/src/test/resources/images/got.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/product/image/:{userId}/:{source }/:{color}?product_id={{productId_para_alterar_imagem}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"product",
+												"image",
+												":{userId}",
+												":{source }",
+												":{color}"
+											],
+											"query": [
+												{
+													"key": "product_id",
+													"value": "{{productId_para_alterar_imagem}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "{userId}",
+													"value": "{{userId}}"
+												},
+												{
+													"key": "{source }",
+													"value": "{{source_path}}"
+												},
+												{
+													"key": "{color}",
+													"value": "{{color}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "403 - Forbidden",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const response = pm.response.json();\r",
+													"\r",
+													"pm.test(\"Status code retornou 403\", () => {\r",
+													"    pm.response.to.have.status(403);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"Estrutura do response retornou correto\", () => {    \r",
+													"    pm.expect(response).to.be.an('object').that.includes.all.keys(\r",
+													"        'success',\r",
+													"        'reason'\r",
+													"    );\r",
+													"    \r",
+													"    pm.expect(response.success).to.be.false;\r",
+													"    pm.expect(response.reason).to.be.a('string').that.matches(/JWT|token|signature/i);\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"source_path\", \"got.jpg\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{invalid_token}}"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"contentType": "image/png",
+													"type": "file",
+													"src": "8iVNOXlUh/got.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/product/image/:{userId}/:{source }/:{color}?product_id={{productId_para_alterar_imagem}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"product",
+												"image",
+												":{userId}",
+												":{source }",
+												":{color}"
+											],
+											"query": [
+												{
+													"key": "product_id",
+													"value": "{{productId_para_alterar_imagem}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "{userId}",
+													"value": "{{userId}}"
+												},
+												{
+													"key": "{source }",
+													"value": "{{source_path}}"
+												},
+												{
+													"key": "{color}",
+													"value": "{{color}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "404 -  notfound",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"pm.test(\"Status code retornou 404\", () => {\r",
+													"    pm.response.to.have.status(404);\r",
+													"});\r",
+													"\r",
+													"pm.test(\"✅ Resposta é HTML de erro\", () => {\r",
+													"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"text/html\");\r",
+													"    \r",
+													"    const body = pm.response.text();\r",
+													"    pm.expect(body).to.include(\"<title>HTTP Status 404 ? Not Found</title>\");\r",
+													"    pm.expect(body).to.include(\"The requested resource\");\r",
+													"    pm.expect(body).to.include(\"is not available\");\r",
+													"});"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										},
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"pm.collectionVariables.set(\"source_path\", \"got.jpg\");"
+												],
+												"type": "text/javascript",
+												"packages": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer {{token}}"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"contentType": "image/png",
+													"type": "file",
+													"src": "8iVNOXlUh/got.jpg"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{baseURL}}/catalog/api/v1/product/image/:{userId}/:{source }/:{color}/notfound?product_id={{productId_para_alterar_imagem}}",
+											"host": [
+												"{{baseURL}}"
+											],
+											"path": [
+												"catalog",
+												"api",
+												"v1",
+												"product",
+												"image",
+												":{userId}",
+												":{source }",
+												":{color}",
+												"notfound"
+											],
+											"query": [
+												{
+													"key": "product_id",
+													"value": "{{productId_para_alterar_imagem}}"
+												}
+											],
+											"variable": [
+												{
+													"key": "{userId}",
+													"value": "{{userId}}"
+												},
+												{
+													"key": "{source }",
+													"value": "{{source_path}}"
+												},
+												{
+													"key": "{color}",
+													"value": "{{color}}"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "https://www.advantageonlineshopping.com",
+			"type": "default"
+		},
+		{
+			"key": "produto_a_ser_buscado",
+			"value": ""
+		},
+		{
+			"key": "color",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "productId_para_alterar_imagem",
+			"value": ""
+		},
+		{
+			"key": "currentUser",
+			"value": ""
+		},
+		{
+			"key": "user_accountType",
+			"value": ""
+		},
+		{
+			"key": "user_address",
+			"value": ""
+		},
+		{
+			"key": "user_allowOffersPromotion",
+			"value": ""
+		},
+		{
+			"key": "user_aobUser",
+			"value": ""
+		},
+		{
+			"key": "user_cityName",
+			"value": ""
+		},
+		{
+			"key": "user_country",
+			"value": ""
+		},
+		{
+			"key": "user_email",
+			"value": ""
+		},
+		{
+			"key": "user_firstName",
+			"value": ""
+		},
+		{
+			"key": "user_lastName",
+			"value": ""
+		},
+		{
+			"key": "user_loginName",
+			"value": ""
+		},
+		{
+			"key": "user_password",
+			"value": ""
+		},
+		{
+			"key": "user_phoneNumber",
+			"value": ""
+		},
+		{
+			"key": "user_stateProvince",
+			"value": ""
+		},
+		{
+			"key": "user_zipcode",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "source_path",
+			"value": ""
+		},
+		{
+			"key": "invalid_token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ3d3cuYWR2YW50YWdlb25saW5lc2hvcHBpbmcuY29tIiwidXNlcklkIjozODM4MzE3NDksInN1YiI6IkZlcnJlaXJhQW5hMDkyIiwicm9sZSI6IlVTRVIifQ.INVALID_SIGNATURE_1234567890_xyzABCdefGHI",
+			"type": "default"
+		},
+		{
+			"key": "qtd_produtos_por_categoria",
+			"value": "10",
+			"type": "default"
+		},
+		{
+			"key": "qtd_produtos_por_categoria",
+			"value": ""
+		},
+		{
+			"key": "quantityPerEachCategory",
+			"value": ""
+		}
+	]
+}

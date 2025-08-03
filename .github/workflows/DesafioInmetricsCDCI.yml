@@ -34,42 +34,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_OPTS: -Xmx1024m -XX:+TieredCompilation -XX:TieredStopAtLevel=1
-          
+
       - name: Ensure Reports Directory Exists
         run: mkdir -p target/cucumber-reports/  # Cria se não existir
         if: always()
 
-      - name: Upload Cucumber HTML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: cucumber-html-report
-          path: target/cucumber-reports/cucumber-reports.html
-          retention-days: 3
-        continue-on-error: true
-
-      - name: Upload Cucumber JSON Report
+      - name: Upload Relatórios de Teste
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cucumber-json-report
-          path: target/cucumber-reports/cucumber.json
-        continue-on-error: true
-
-      - name: Upload JUnit Reports
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: junit-reports
+          name: relatorios-teste
           path: |
+            target/cucumber-reports/cucumber-reports.html
+            target/cucumber-reports/junit-report.xml
+            target/cucumber-reports/cucumber.json
             target/surefire-reports/*.xml
             target/failsafe-reports/*.xml
-            target/cucumber-reports/junit-report.xml
         continue-on-error: true
-
-      - name: Publicar Resultados dos Testes
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: Test Results
-          path: target/cucumber-reports/junit-report.xml
-          reporter: java-junit
