@@ -4,7 +4,7 @@ import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
-import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
+import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
 
 /**
  * Runner de testes automatizados utilizando Cucumber com JUnit.
@@ -23,9 +23,9 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
  * <h3>Tags disponiveis:</h3>
  * <ul>
  *     <li><b>@AdvantageShopping</b> - Executa os testes relacionados ao site Advantage Shopping</li>
- *     <li><b>@Todos</b> - Executa todos os testes disponíveis</li>
- *     <li><b>@api</b> - Executa os testes de API</li>
- *     <li><b>@web</b> - Executa os testes de interface web</li>
+ *     <li><b>@All</b> - Executa todos os testes disponíveis</li>
+ *     <li><b>@API</b> - Executa os testes de API</li>
+ *     <li><b>@WEB</b> - Executa os testes de interface web</li>
  *     <li><b>@CarrinhoDeCompras</b> - Executa os testes relacionados ao Carrinho De Compras
  *     <li><b>@AtualizarImagem</b> - Executa os testes relacionados a atualizar imagem de produtos por API</li>
  *     <li><b>@BuscarProdutos</b> - Executa os testes relacionados a busca de produtos por API </li>
@@ -51,8 +51,8 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
                 "junit:target/cucumber-reports/junit-report.xml"
         },
         monochrome = true,
-        snippets = CAMELCASE,
-        tags = "@AdvantageShopping"
+        snippets = UNDERSCORE,
+        tags = "@All"
 )
 public class RunTest {
 }

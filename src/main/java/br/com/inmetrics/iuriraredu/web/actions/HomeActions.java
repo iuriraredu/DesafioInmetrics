@@ -1,12 +1,12 @@
 package br.com.inmetrics.iuriraredu.web.actions;
 
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.implicitlyWait;
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
-
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import br.com.inmetrics.iuriraredu.web.pages.HomePage;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForClickable;
 
 public class HomeActions extends BaseTest {
 
@@ -17,29 +17,28 @@ public class HomeActions extends BaseTest {
     }
 
     public void clickOnSearchBtn() {
-        implicitlyWait(getDriver());
-        this.homePage.getSearchBtn().click();
+        WebElement searchBtn = waitForClickable(getWait(), this.homePage.getSearchBtn());
+        searchBtn.click();
     }
 
     public void sendTextOnSearchInput(String text) {
-        implicitlyWait(getDriver());
-        WebElement searchInput = this.homePage.getSearchInput();
+        WebElement searchInput = waitForClickable(getWait(), this.homePage.getSearchInput());
         searchInput.sendKeys(text);
         searchInput.sendKeys(Keys.ENTER);
     }
 
     public String getTextLaptop() {
-        implicitlyWait(getDriver());
-        return this.homePage.getLaptopLink().getText();
+        WebElement laptopLink = waitForClickable(getWait(), this.homePage.getLaptopLink());
+        return laptopLink.getText();
     }
 
     public void closeSearch() {
-        implicitlyWait(getDriver());
-        jsClick(getDriver(), this.homePage.getCloseSearchBtn());
+        WebElement buttonCloseSearch = waitForClickable(getWait(), this.homePage.getCloseSearchBtn());
+        jsClick(getDriver(), buttonCloseSearch);
     }
 
     public void clickOnProductByName(String productName) {
-        implicitlyWait(getDriver());
-        this.homePage.getProductByName(productName, getDriver()).click();
+        WebElement product = waitForClickable(getWait(),  this.homePage.getProductByName(productName, getDriver()));
+        product.click();
     }
 }

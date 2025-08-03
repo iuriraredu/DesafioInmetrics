@@ -2,7 +2,9 @@ package br.com.inmetrics.iuriraredu.settings;
 
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
+import static java.lang.Boolean.parseBoolean;
 
+import br.com.inmetrics.iuriraredu.utils.ConfigManager;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
@@ -23,6 +25,7 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 
 import java.util.List;
+
 
 /**
  * Classe base para testes automatizados utilizando Selenium WebDriver.
@@ -117,7 +120,7 @@ public abstract class BaseTest {
      * @throws IllegalArgumentException Se o navegador não for suportado
      */
     private WebDriver createDriver(String browser) {
-        boolean isHeadless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+        boolean isHeadless = parseBoolean(ConfigManager.getPropertiesValue("HEADLESS_MODE"));
 
         return switch (browser.toLowerCase()) {
             case "chrome" -> {

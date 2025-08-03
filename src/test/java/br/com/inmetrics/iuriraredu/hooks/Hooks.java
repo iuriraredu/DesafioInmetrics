@@ -9,7 +9,10 @@ import io.cucumber.java.Scenario;
 import java.io.File;
 import java.io.IOException;
 
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPropertiesValue;
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.implicitlyWait;
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForPageLoad;
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 /**
@@ -31,13 +34,14 @@ public class Hooks extends BaseTest {
     /**
      * Inicializa o navegador antes de cenários marcados com {@code @web}.
      */
-    @Before(value = "@web")
+    @Before(value = "@WEB")
     public void initWebApplication() {
         System.out.println("🔧 Iniciando o cenário de teste...");
         super.browserSetUp(
-                getPropertiesValue("browser"),
+                getPropertiesValue("BROWSER"),
                 getPropertiesValue("BASEURL")
         );
+        implicitlyWait(getDriver());
     }
 
     /**
@@ -46,7 +50,7 @@ public class Hooks extends BaseTest {
      *
      * @param scenario Instância do cenário em execução
      */
-    @After(value = "@web")
+    @After(value = "@WEB")
     public void finishWebApplication(Scenario scenario) {
         try {
             String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
@@ -70,7 +74,7 @@ public class Hooks extends BaseTest {
     /**
      * Inicializa o contexto de testes de API antes de cenários marcados com {@code @api}, configurando a URL base.
      */
-    @Before(value = "@api")
+    @Before(value = "@API")
     public void initApiApplication() {
         System.out.println("🔧 Iniciando o cenário de teste API...");
         super.apiSetUp(
@@ -81,7 +85,7 @@ public class Hooks extends BaseTest {
     /**
      * Finaliza o contexto de testes de API de cenários marcados com {@code @api} e realiza limpezas necessárias.
      */
-    @After(value = "@api")
+    @After(value = "@API")
     public void finishApiApplication() {
         super.apiTearDown();
         System.out.println("🧹 Finalizando o cenário de teste API...");

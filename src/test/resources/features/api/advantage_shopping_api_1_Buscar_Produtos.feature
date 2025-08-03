@@ -4,8 +4,8 @@
 #date: 02/08/2025
 #version: 1.0
 
-@api @BuscarProdutos @AdvantageShopping @Todos
-Funcionalidade: Advantage Shopping - BUscar Produtos
+@API @BuscarProdutos @AdvantageShopping @All
+Funcionalidade: Advantage Shopping - Buscar Produtos
 
   Eu como consumidor da API do Advantage Online Shopping
   Quero buscar produtos por nome

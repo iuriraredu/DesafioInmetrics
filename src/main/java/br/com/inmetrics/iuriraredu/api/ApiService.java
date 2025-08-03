@@ -39,7 +39,7 @@ public class ApiService extends BaseTest {
                         "accept", "*/*",
                         "Content-Type", "application/json"
                 ))
-                .body(user.getUserInJson())
+                .body(user.toJson())
                 .when()
                 .post(getPropertiesValue("CREATE_USER_ACCOUNT_ENDPOINT"));
     }

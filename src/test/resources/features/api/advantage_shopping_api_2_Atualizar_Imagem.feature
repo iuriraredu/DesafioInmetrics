@@ -4,7 +4,7 @@
 #date: 02/08/2025
 #version: 1.0
 
-@api @AtualizarImagem @AdvantageShopping @Todos
+@API @AtualizarImagem @AdvantageShopping @All
 Funcionalidade: Advantage Shopping - Atualizar imagem de um Produto
 
   Eu como consumidor da API do Advantage Online Shopping

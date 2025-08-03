@@ -1,11 +1,16 @@
 package br.com.inmetrics.iuriraredu.web.actions;
 
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.implicitlyWait;
-
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import br.com.inmetrics.iuriraredu.web.pages.ProductPage;
+import org.openqa.selenium.WebElement;
 
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForClickable;
+
+/** * Classe responsável por ações relacionadas à página do produto.
+ * Contém métodos para interagir com os elementos da página do produto,
+ * como clicar em botões de cor, adicionar ao carrinho e acessar o carrinho.
+ */
 public class ProductActions extends BaseTest {
 
     private final ProductPage productPage;
@@ -15,26 +20,31 @@ public class ProductActions extends BaseTest {
     }
 
     /**
-     * Clica no botão de cor vermelha na página do produto.
+     * Clica no botão de cor do produto na página do produto.
+     *
+     * @param color Cor do botão a ser clicado.
      */
     public void clickColorButton(String color) {
-        implicitlyWait(getDriver());
+        WebElement buttonColor = waitForClickable(getWait(), productPage.getColorBtn(color, getDriver()));
 //        productPage.getColorBtn(color, getDriver()).click();
-        jsClick(
-                getDriver(), productPage.getColorBtn(color, getDriver())
-        );
+        jsClick(getDriver(),buttonColor);
     }
 
     /**
-     * Clica no botão de adicionar ao carrinho na página do produto.
+     * Obtém o nome do produto na página do produto.
+     *
+     * @return Nome do produto.
      */
     public void clickAddToCartButton() {
-        implicitlyWait(getDriver());
-        productPage.getAddToCartBtn().click();
+        WebElement addToCartBtn = waitForClickable(getWait(), productPage.getAddToCartBtn());
+        addToCartBtn.click();
     }
 
+    /**
+     * Clica no botão do carrinho na página do produto.
+     */
     public void clickCartButton() {
-        implicitlyWait(getDriver());
-        productPage.getCartBtn().click();
+        WebElement cartBtn = waitForClickable(getWait(), productPage.getCartBtn());
+        cartBtn.click();
     }
 }

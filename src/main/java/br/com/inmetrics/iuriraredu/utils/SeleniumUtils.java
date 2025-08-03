@@ -29,34 +29,37 @@ import java.time.Duration;
  */
 public class SeleniumUtils {
 
+
     /**
-     * Aguarda até que o elemento esteja clicável, utilizando o timeout padrão definido em configuração.
-     * Ignora exceções de referência obsoleta do elemento.
+     * Aguarda até que o elemento esteja clicável, usando um tempo limite personalizado.
+     * Ignora exceções de referência obsoleta do elemento durante a espera.
      *
-     * @param driver  Instância do {@link WebDriver} utilizada na espera.
-     * @param element Elemento {@link WebElement} a ser aguardado.
+     * @param wait    Instância de {@link WebDriverWait} utilizada para aguardar a condição.
+     * @param element Elemento {@link WebElement} que deve se tornar clicável.
      * @return O elemento clicável, pronto para interação.
-     * @throws org.openqa.selenium.TimeoutException Se o elemento não se tornar clicável dentro do tempo limite.
+     * @throws org.openqa.selenium.TimeoutException Se o elemento não ficar clicável dentro do tempo limite.
      */
-    public static WebElement waitForClickable(WebDriver driver, WebElement element) {
-        return waitForClickable(driver, element, getGlobalTimeout());
+    public static WebElement waitForClickable(WebDriverWait wait, WebElement element) {
+        return wait.ignoring(StaleElementReferenceException.class)
+                .until(ExpectedConditions.elementToBeClickable(element));
     }
 
     /**
-     * Aguarda até que o elemento esteja clicável, utilizando um timeout customizado.
-     * Ignora exceções de referência obsoleta do elemento.
+     * Verifica se o elemento está realmente clicável, ou seja, se não está coberto por outro elemento.
      *
-     * @param driver  Instância do {@link WebDriver} utilizada na espera.
-     * @param element Elemento {@link WebElement} a ser aguardado.
-     * @param timeout Tempo máximo de espera.
-     * @return O elemento clicável, pronto para interação.
-     * @throws org.openqa.selenium.TimeoutException Se o elemento não se tornar clicável dentro do tempo limite.
+     * @param driver  Instância do {@link WebDriver} utilizada para executar o JavaScript.
+     * @param element Elemento {@link WebElement} a ser verificado.
+     * @return {@code true} se o elemento é clicável, {@code false} caso contrário.
      */
-    public static WebElement waitForClickable(WebDriver driver, WebElement element, Duration timeout) {
-        return new WebDriverWait(driver, timeout)
-                .pollingEvery(getPollingInterval())
-                .ignoring(StaleElementReferenceException.class)
-                .until(ExpectedConditions.elementToBeClickable(element));
+    private static boolean isElementClickable(WebDriver driver, WebElement element) {
+        return (Boolean) ((JavascriptExecutor) driver).executeScript(
+                "var elem = arguments[0];" +
+                        "var rect = elem.getBoundingClientRect();" +
+                        "var x = rect.left + rect.width/2;" +
+                        "var y = rect.top + rect.height/2;" +
+                        "return document.elementFromPoint(x, y) === elem;",
+                element
+        );
     }
 
     /**
@@ -66,10 +69,11 @@ public class SeleniumUtils {
      * @param timeout Tempo máximo de espera.
      * @throws org.openqa.selenium.TimeoutException Se a página não carregar completamente dentro do tempo limite.
      */
-    public static void waitForPageLoad(WebDriver driver, Duration timeout) {
-        new WebDriverWait(driver, timeout).until(
+    public static void waitForPageLoad(WebDriverWait wait, WebDriver driver, Duration timeout) {
+        wait.ignoring(StaleElementReferenceException.class).until(
                 webDriver -> ((JavascriptExecutor) webDriver)
-                        .executeScript("return document.readyState").equals("complete"));
+                        .executeScript("return document.readyState").equals("complete")
+        );
     }
 
     /**

@@ -4,7 +4,7 @@
 #date: 15/07/2025
 #version: 1.0
 
-@web @CarrinhoDeCompras @AdvantageShopping @Todos
+@WEB @CarrinhoDeCompras @AdvantageShopping @All
 Funcionalidade: Advantage Shopping - Carrinho de compras
 
   Eu como usuário do site Advantage Online Shopping
