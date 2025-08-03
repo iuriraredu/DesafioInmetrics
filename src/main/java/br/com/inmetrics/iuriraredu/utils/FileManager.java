@@ -1,6 +1,5 @@
 package br.com.inmetrics.iuriraredu.utils;
 
-import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
@@ -14,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getReportsPath;
 import static org.apache.commons.io.FileUtils.copyFile;
 import static org.apache.commons.io.FileUtils.forceMkdir;
+import static org.openqa.selenium.OutputType.FILE;
 
 /**
  * Classe utilitária para operações de arquivos relacionadas a testes automatizados.
@@ -34,15 +34,14 @@ public class FileManager {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String folderPath = getReportsPath() + "/screenshots/" + LocalDate.now().toString();
             String extension = ".png"; // Define a extensão do arquivo
-            filePath = folderPath + "/" + testName + "_" + timestamp + extension; // Atribui o caminho aqui
+            filePath = folderPath + "/" + testName + "/" + timestamp + extension; // Atribui o caminho aqui
 
-            File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+            File screenshot = ((TakesScreenshot)driver).getScreenshotAs(FILE);
             forceMkdir(new File(folderPath));
             copyFile(screenshot, new File(filePath));
             System.out.println("Screenshot salvo em: " + filePath); // Adiciona um log para confirmar
         } catch (IOException e) {
             System.err.println("Erro ao tirar screenshot: " + e.getMessage());
-            // Ou usar uma biblioteca de log como Log4j/SLF4j
         } catch (ClassCastException e) { // Caso o driver não seja TakesScreenshot
             System.err.println("O driver não suporta tirar screenshots: " + e.getMessage());
         }

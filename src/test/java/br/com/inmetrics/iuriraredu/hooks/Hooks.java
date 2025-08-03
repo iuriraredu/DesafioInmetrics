@@ -1,7 +1,6 @@
 package br.com.inmetrics.iuriraredu.hooks;
 
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
-import br.com.inmetrics.iuriraredu.utils.FileManager;
 import io.cucumber.java.After;
 import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
@@ -11,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPropertiesValue;
+import static br.com.inmetrics.iuriraredu.utils.FileManager.takeScreenShot;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.implicitlyWait;
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
@@ -35,24 +35,23 @@ public class Hooks extends BaseTest {
      */
     @Before(value = "@WEB")
     public void initWebApplication(Scenario scenario) {
-        System.out.println("🔧 Iniciando o cenário de teste...");
-        super.browserSetUp(
-                getPropertiesValue("BROWSER"),
-                getPropertiesValue("BASEURL")
-        );
+        System.out.println("🔧 Iniciando o cenário  " + scenario.getName() + "...");
+        super.browserSetUp(getPropertiesValue("BROWSER"), getPropertiesValue("BASEURL"));
         implicitlyWait(getDriver());
     }
 
+    /**
+     * Captura e anexa um screenshot ao relatório do cenário após cada passo de cenários marcados com {@code @web}.
+     *
+     * @param scenario Instância do cenário em execução
+     */
     @AfterStep(value = "@WEB")
     public void afterStep(Scenario scenario) {
         try {
-            String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
+            String screenshotPath = takeScreenShot(getDriver(), scenario.getName());
             if (screenshotPath != null) {
-                scenario.attach(readFileToByteArray(
-                                new File(screenshotPath)),
-                        "image/png",
-                        "Screenshot"
-                );
+                implicitlyWait(getDriver());
+                scenario.attach(readFileToByteArray(new File(screenshotPath)), "image/png", "Screenshot");
             } else {
                 System.err.println("Screenshot não foi capturado.");
             }
@@ -69,24 +68,8 @@ public class Hooks extends BaseTest {
      */
     @After(value = "@WEB")
     public void finishWebApplication(Scenario scenario) {
-        implicitlyWait(getDriver());
-        try {
-            String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
-            if (screenshotPath != null) {
-                scenario.attach(readFileToByteArray(
-                                new File(screenshotPath)),
-                        "image/png",
-                        "Screenshot"
-                );
-            } else {
-                System.err.println("Screenshot não foi capturado.");
-            }
-        } catch (IOException e) {
-            System.err.println("Erro ao capturar screenshot: " + e.getMessage());
-        }
-
         super.browserTearDown();
-        System.out.println("🧹 Finalizando o cenário de teste...");
+        System.out.println("🧹 Finalizando o cenário " + scenario.getName() + "...");
     }
 
     /**
@@ -95,9 +78,7 @@ public class Hooks extends BaseTest {
     @Before(value = "@API")
     public void initApiApplication() {
         System.out.println("🔧 Iniciando o cenário de teste API...");
-        super.apiSetUp(
-                getPropertiesValue("BASEURL")
-        );
+        super.apiSetUp(getPropertiesValue("BASEURL"));
     }
 
     /**

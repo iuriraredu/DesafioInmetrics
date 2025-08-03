@@ -26,7 +26,7 @@ import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
  *
  * <p>Os métodos de espera ignoram exceções de referência obsoleta e lançam {@link org.openqa.selenium.TimeoutException} caso a condição não seja atendida no tempo limite.</p>
  */
-public class SeleniumUtils {
+public class SeleniumUtils{
 
 
     /**
@@ -38,7 +38,7 @@ public class SeleniumUtils {
      * @return O elemento clicável, pronto para interação.
      * @throws org.openqa.selenium.TimeoutException Se o elemento não ficar clicável dentro do tempo limite.
      */
-    public static WebElement waitForClickable(WebDriverWait wait, WebElement element) {
+    public static WebElement waitForClickable(WebDriverWait wait, WebElement element){
         return wait.ignoring(StaleElementReferenceException.class)
                 .until(ExpectedConditions.elementToBeClickable(element));
     }
@@ -50,7 +50,7 @@ public class SeleniumUtils {
      * @param element Elemento {@link WebElement} a ser verificado.
      * @return {@code true} se o elemento é clicável, {@code false} caso contrário.
      */
-    private static boolean isElementClickable(WebDriver driver, WebElement element) {
+    private static boolean isElementClickable(WebDriver driver, WebElement element){
         return (Boolean) ((JavascriptExecutor) driver).executeScript(
                 "var elem = arguments[0];" +
                         "var rect = elem.getBoundingClientRect();" +
@@ -68,11 +68,11 @@ public class SeleniumUtils {
      * @param timeout Tempo máximo de espera.
      * @throws org.openqa.selenium.TimeoutException Se a página não carregar completamente dentro do tempo limite.
      */
-    public static void waitForPageLoad(WebDriverWait wait, WebDriver driver, Duration timeout) {
+    public static void waitForPageLoad(WebDriverWait wait, WebDriver driver, Duration timeout){
         wait.ignoring(StaleElementReferenceException.class)
                 .until(webDriver -> ((JavascriptExecutor) driver)
-                .executeScript("return document.readyState").equals("complete")
-        );
+                        .executeScript("return document.readyState").equals("complete")
+                );
     }
 
     /**
@@ -80,7 +80,7 @@ public class SeleniumUtils {
      *
      * @param driver Instância do {@link WebDriver} a ser configurada.
      */
-    public static void implicitlyWait(WebDriver driver) {
+    public static void implicitlyWait(WebDriver driver){
         driver.manage().timeouts().implicitlyWait(getGlobalTimeout());
     }
 
@@ -90,7 +90,7 @@ public class SeleniumUtils {
      * @param driver  Instância do {@link WebDriver} utilizada para executar o JavaScript.
      * @param element Elemento {@link WebElement} para o qual será realizada a rolagem.
      */
-    public static void scrollToElement(WebDriver driver, WebElement element) {
+    public static void scrollToElement(WebDriver driver, WebElement element){
         ((JavascriptExecutor) driver).executeScript(
                 "arguments[0].scrollIntoView(true);", element
         );
@@ -101,7 +101,7 @@ public class SeleniumUtils {
      *
      * @param driver Instância do {@link WebDriver} utilizada para executar o JavaScript.
      */
-    public static void scrollToTop(WebDriver driver) {
+    public static void scrollToTop(WebDriver driver){
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, 0);");
     }
 
@@ -110,7 +110,7 @@ public class SeleniumUtils {
      *
      * @param driver Instância do {@link WebDriver} utilizada para executar o JavaScript.
      */
-    public static void scrollToBottom(WebDriver driver) {
+    public static void scrollToBottom(WebDriver driver){
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
     }
 
@@ -123,11 +123,11 @@ public class SeleniumUtils {
      * @param driver  Instância do {@link WebDriver} utilizada para executar o JavaScript.
      * @param element Elemento {@link WebElement} que será clicado via script.
      */
-    public static void jsClick(WebDriver driver, WebElement element) {
+    public static void jsClick(WebDriver driver, WebElement element){
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
-    public static boolean tryToClick(WebDriver driver, WebDriverWait wait, WebElement element) {
+    public static boolean tryToClick(WebDriver driver, WebDriverWait wait, WebElement element){
         try {
             // 1ª Tentativa: Clique normal com wait
             wait.until(ExpectedConditions.elementToBeClickable(element))
@@ -159,7 +159,7 @@ public class SeleniumUtils {
     /**
      * Tenta enviar texto com múltiplas estratégias
      */
-    public static boolean tryToSendKeys(WebDriver driver, WebDriverWait wait, WebElement element, String text) {
+    public static boolean tryToSendKeys(WebDriver driver, WebDriverWait wait, WebElement element, String text){
         try {
             // 1ª Tentativa: SendKeys normal com wait
             wait.until(ExpectedConditions.elementToBeClickable(element))
@@ -191,7 +191,7 @@ public class SeleniumUtils {
     /**
      * Tenta múltiplas estratégias para obter texto de um elemento
      */
-    private static String tryToGetText(WebDriver driver, WebDriverWait wait, WebElement element) {
+    private static String tryToGetText(WebDriver driver, WebDriverWait wait, WebElement element){
         // 1ª Tentativa: getText() padrão com wait
         try {
             return wait.until(ExpectedConditions.elementToBeClickable(element))

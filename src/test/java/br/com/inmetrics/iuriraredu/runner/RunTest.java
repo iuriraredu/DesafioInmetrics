@@ -52,7 +52,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
         },
         monochrome = true,
         snippets = UNDERSCORE,
-        tags = "@API"
+        tags = "@All"
 )
 public class RunTest {
 }
