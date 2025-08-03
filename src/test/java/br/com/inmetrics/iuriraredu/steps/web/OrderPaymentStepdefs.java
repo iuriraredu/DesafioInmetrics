@@ -2,11 +2,11 @@ package br.com.inmetrics.iuriraredu.steps.web;
 
 import br.com.inmetrics.iuriraredu.web.actions.OrderPaymentActions;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.pt.E;
 import io.cucumber.java.pt.Entao;
-import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OrderPaymentStepdefs {
 
@@ -21,7 +21,7 @@ public class OrderPaymentStepdefs {
         List<String> products = dataTableProducts.asList(String.class);
         for (String product : products) {
             String productName = product.toUpperCase();
-            Assertions.assertEquals(
+            assertEquals(
                     productName,
                     orderPaymentActions.getProductName(productName)
             );

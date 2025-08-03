@@ -74,14 +74,32 @@ public class ConfigManager {
         return 5L;
     }
 
+    /**
+     * Retorna o valor da propriedade "wait" como uma instância de {@link Duration} em segundos.
+     * Caso o valor seja inválido, ausente ou menor que 1, retorna {@link Duration} de 5 segundos.
+     *
+     * @return {@link Duration} correspondente ao valor da propriedade "wait" em segundos, ou 5 segundos se inválido.
+     */
     public static Duration getGlobalTimeout() {
         return Duration.ofSeconds(getPropertiesValueInLong("GLOBAL_TIMEOUT"));
     }
 
+    /**
+     * Retorna o valor da propriedade "POLLING_INTERVAL" como uma instância de {@link Duration} em segundos.
+     * Caso o valor seja inválido, ausente ou menor que 1, retorna {@link Duration} de 5 segundos.
+     *
+     * @return {@link Duration} correspondente ao valor da propriedade "POLLING_INTERVAL" em segundos, ou 5 segundos se inválido.
+     */
     public static Duration getPollingInterval() {
         return Duration.ofSeconds(getPropertiesValueInLong("POLLING_INTERVAL"));
     }
 
+    /**
+     * Retorna o caminho do diretório onde os relatórios serão salvos.
+     * O caminho é obtido a partir da propriedade "reportPath" no arquivo de propriedades.
+     *
+     * @return Caminho do diretório de relatórios, ou {@code null} se a propriedade não estiver definida.
+     */
     public static String getReportsPath() {
         return getPropertiesValue("reportPath");
     }

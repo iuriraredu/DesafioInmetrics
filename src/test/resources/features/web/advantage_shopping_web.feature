@@ -20,7 +20,7 @@ Funcionalidade: Advantage Shopping - Carrinho de compras
 
     Exemplos:
       | Produtos                   |
-      | HP ENVY - 17t Touch Laptop |
+        | HP ENVY - 17t Touch Laptop |
 #      | HP ENVY x360 - 15t Laptop           |
 #      | HP Pavilion 15t Touch Laptop        |
 #      | HP Pavilion 15z Laptop              |

@@ -1,8 +1,5 @@
 package br.com.inmetrics.iuriraredu.utils;
 
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
-
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +8,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
 
 /**
  * Classe utilitária para operações com Selenium WebDriver em testes automatizados.
@@ -126,5 +125,95 @@ public class SeleniumUtils {
      */
     public static void jsClick(WebDriver driver, WebElement element) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+    }
+
+    public static boolean tryToClick(WebDriver driver, WebDriverWait wait, WebElement element) {
+        try {
+            // 1ª Tentativa: Clique normal com wait
+            wait.until(ExpectedConditions.elementToBeClickable(element))
+                    .click();
+            return true;
+
+        } catch (Exception e1) {
+            try {
+                // 2ª Tentativa: JavaScript click
+                ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+                return true;
+
+            } catch (Exception e2) {
+                // 3ª Tentativa: Scroll + Click
+                try {
+                    ((JavascriptExecutor) driver).executeScript(
+                            "arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element);
+                    Thread.sleep(500); // Pequena pausa após scroll
+                    element.click();
+                    return true;
+
+                } catch (Exception e3) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Tenta enviar texto com múltiplas estratégias
+     */
+    public static boolean tryToSendKeys(WebDriver driver, WebDriverWait wait, WebElement element, String text) {
+        try {
+            // 1ª Tentativa: SendKeys normal com wait
+            wait.until(ExpectedConditions.elementToBeClickable(element))
+                    .sendKeys(text);
+            return true;
+
+        } catch (Exception e1) {
+            try {
+                // 2ª Tentativa: JavaScript focus + sendKeys
+                ((JavascriptExecutor) driver).executeScript(
+                        "arguments[0].focus(); arguments[0].value = arguments[1];",
+                        element, text);
+                return true;
+
+            } catch (Exception e2) {
+                // 3ª Tentativa: Clear + SendKeys forçado
+                try {
+                    element.clear();
+                    element.sendKeys(text);
+                    return true;
+
+                } catch (Exception e3) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Tenta múltiplas estratégias para obter texto de um elemento
+     */
+    private static String tryToGetText(WebDriver driver, WebDriverWait wait, WebElement element) {
+        // 1ª Tentativa: getText() padrão com wait
+        try {
+            return wait.until(ExpectedConditions.elementToBeClickable(element))
+                    .getText();
+        } catch (Exception e) {
+            // 2ª Tentativa: getAttribute("textContent")
+            try {
+                return element.getAttribute("textContent");
+            } catch (Exception e2) {
+                // 3ª Tentativa: JavaScript
+                try {
+                    return (String) ((JavascriptExecutor) driver)
+                            .executeScript("return arguments[0].textContent || arguments[0].innerText", element);
+                } catch (Exception e3) {
+                    // 4ª Tentativa: getAttribute("value") para inputs
+                    try {
+                        return element.getAttribute("value");
+                    } catch (Exception e4) {
+                        return null;
+                    }
+                }
+            }
+        }
     }
 }

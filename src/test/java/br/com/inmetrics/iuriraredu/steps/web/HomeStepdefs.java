@@ -54,6 +54,7 @@ public class HomeStepdefs {
         for (String product : products) {
             buscarESelecionarProduto(product);
             productActions.clickAddToCartButton();
+            homeActions.clickOnHomeLink();
         }
         productActions.clickCartButton();
     }

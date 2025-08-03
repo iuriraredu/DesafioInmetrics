@@ -80,7 +80,7 @@ public class User {
      */
     public User(String address, String cityName, String firstName, String lastName,
                 String phoneNumber, String stateProvince, String zipcode) {
-        String userName = removerAcentosEEspacos(firstName + lastName) + getRandomChar("0123456789");
+        String userName = limitarTexto((firstName + lastName), 8) + getRandomChar("0123456789");
         this.accountType = "USER";
         this.address = address;
         this.allowOffersPromotion = true;
@@ -89,8 +89,8 @@ public class User {
         this.country = "BRAZIL_BR";
         this.firstName = firstName;
         this.lastName = lastName;
-        this.loginName = userName.toLowerCase();
-        this.email = userName.toLowerCase() + "@gmail.com";
+        this.loginName = userName;
+        this.email = userName + "@gmail.com";
         this.password = generateStrongPassword(8);
         this.phoneNumber = phoneNumber.replaceAll("[\\s()-]", "");
         this.stateProvince = stateProvince;
@@ -105,6 +105,20 @@ public class User {
     public String toJson() {
         return new Gson().toJson(this);
 //        return String.format( "{" + "\"accountType\":\"%s\"," + "\"address\":\"%s\"," + "\"allowOffersPromotion\":%b," + "\"aobUser\":%b, " + "\"cityName\":\"%s\"," + "\"country\":\"%s\"," + "\"email\":\"%s\"," + "\"firstName\":\"%s\", " + "\"lastName\":\"%s\"," + "\"loginName\":\"%s\"," + "\"password\":\"%s\"," + "\"phoneNumber\":\"%s\"," + "\"stateProvince\":\"%s\"," + "\"zipcode\":\"%s\"" + "}", accountType, address, allowOffersPromotion, aobUser, cityName, country, email, firstName, lastName, loginName, password, phoneNumber, stateProvince, zipcode);
+    }
+
+    /**
+     * Limita o tamanho de um texto, removendo acentos e espaços, e convertendo para minúsculas.
+     *
+     * @param textoOriginal Texto original a ser limitado.
+     * @param length        Tamanho máximo permitido.
+     * @return Texto limitado, sem acentos e espaços, em minúsculas.
+     */
+    private static String limitarTexto(String textoOriginal, int length) {
+        if (textoOriginal == null) return "";
+        return removerAcentosEEspacos(textoOriginal.length() > length
+                ? textoOriginal.substring(0, length)
+                : textoOriginal).toLowerCase();
     }
 
     /**
@@ -128,7 +142,7 @@ public class User {
         final String lowercase = "abcdefghijklmnopqrstuvwxyz";
         final String uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final String numbers = "0123456789";
-        final String symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+        final String symbols = "!@#$%^&*()_+-=[]{}<>?|;:'\",./`~";
         final String allChars = lowercase + uppercase + numbers + symbols;
 
         StringBuilder password = new StringBuilder();
@@ -137,6 +151,7 @@ public class User {
         password.append(getRandomChar(lowercase));
         password.append(getRandomChar(uppercase));
         password.append(getRandomChar(numbers));
+        password.append(getRandomChar(symbols));
         password.append(getRandomChar(symbols));
 
         // Preenche o restante da senha com caracteres aleatórios

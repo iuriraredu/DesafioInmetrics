@@ -2,15 +2,19 @@ package br.com.inmetrics.iuriraredu.web.actions;
 
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import br.com.inmetrics.iuriraredu.web.pages.ShoppingCartPage;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.scrollToBottom;
+import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.tryToClick;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForClickable;
 
-/**
- * Classe responsável por ações relacionadas ao carrinho de compras.
- * Esta classe estende BaseTest e utiliza métodos utilitários para interações com a página.
+/** Classe responsável por ações relacionadas ao carrinho de compras.
+ *
+ * <p>Utiliza métodos utilitários do Selenium para interagir com elementos da ShoppingCartPage,
+ * como busca de produtos, navegação e fechamento de campos de pesquisa.</p>
+ *
+ * <p>Herda configurações de teste da classe {@link BaseTest}.</p>
  */
 public class ShoppingCartActions extends BaseTest {
 
@@ -37,9 +41,8 @@ public class ShoppingCartActions extends BaseTest {
      * e então realiza um clique via JavaScript no botão.
      */
     public void clickCheckoutButton() {
-        WebElement checkoutButton = waitForClickable(getWait(), shoppingCartPage.getCheckoutButton());
         scrollToBottom(getDriver());
-        jsClick(getDriver(), checkoutButton);
-        checkoutButton.click();
+        shoppingCartPage.getCheckoutButton().sendKeys(Keys.ESCAPE);
+        tryToClick(getDriver(), getWait(), shoppingCartPage.getCheckoutButton());
     }
 }

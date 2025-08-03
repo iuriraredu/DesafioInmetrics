@@ -14,7 +14,7 @@ public class SearchResultPage {
     }
 
     public WebElement getProductByName(String productName, WebDriver driver) {
-        String xpath = String.format("//a[text()='%s']", productName);
+        String xpath = String.format("//a[@class='productName ng-binding' and text()='%s']", productName);
         return driver.findElement(By.xpath(xpath));
     }
 }

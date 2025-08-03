@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 public class OrderPaymentPage {
-    public OrderPaymentPage(WebDriver driver){
+    public OrderPaymentPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 

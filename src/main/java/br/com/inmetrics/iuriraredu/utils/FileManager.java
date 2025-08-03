@@ -49,6 +49,13 @@ public class FileManager {
         return filePath; // Retorna o caminho ou null em caso de falha
     }
 
+    /**
+     * Obtém um arquivo de imagem a partir do diretório de recursos do projeto.
+     *
+     * @param fileName Nome do arquivo de imagem a ser recuperado.
+     * @return Um objeto {@link File} representando o arquivo de imagem.
+     * @throws RuntimeException Se o arquivo não for encontrado no caminho especificado.
+     */
     public static File getImageFile(String fileName) {
         // Caminho relativo a partir da raiz do projeto
         String imagePath = Paths.get("src", "test", "resources", "images", fileName).toString();

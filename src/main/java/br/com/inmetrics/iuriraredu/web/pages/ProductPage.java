@@ -10,7 +10,7 @@ import org.openqa.selenium.support.PageFactory;
 @Getter
 public class ProductPage {
 
-    public ProductPage(WebDriver driver){
+    public ProductPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
@@ -20,9 +20,15 @@ public class ProductPage {
     @FindBy(xpath = "//h3[@class='ng-binding']")
     private WebElement productName;
 
-    public WebElement getColorBtn(String colorName, WebDriver driver) {
+    public WebElement getColorBunnyBtn(String colorName, WebDriver driver) {
         return driver.findElement(By.xpath(
-                String.format("//span[@title='%s']", colorName.toUpperCase())
+                String.format("//span[@id='bunny' and @title='%s']", colorName.toUpperCase())
+        ));
+    }
+
+    public WebElement getColorRabbitBtn(String colorName, WebDriver driver) {
+        return driver.findElement(By.xpath(
+                String.format("//span[@id='rabbit' and @title='%s']", colorName.toUpperCase())
         ));
     }
 

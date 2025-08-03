@@ -1,11 +1,13 @@
 package br.com.inmetrics.iuriraredu.settings;
 
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
-import static java.lang.Boolean.parseBoolean;
-
 import br.com.inmetrics.iuriraredu.utils.ConfigManager;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -17,15 +19,12 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.RequestLoggingFilter;
-import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 
 import java.util.List;
 
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
+import static java.lang.Boolean.parseBoolean;
 
 /**
  * Classe base para testes automatizados utilizando Selenium WebDriver.
@@ -35,11 +34,22 @@ import java.util.List;
  * <p>Utiliza ThreadLocal para garantir isolamento entre execuções paralelas.</p>
  */
 public abstract class BaseTest {
+    /** ThreadLocal para armazenar a instância do WebDriver.
+     * Garante que cada thread tenha sua própria instância de WebDriver.
+     */
     private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
+    /** ThreadLocal para armazenar a instância do WebDriverWait.
+     * Garante que cada thread tenha sua própria instância de espera explícita.
+     */
     private static final ThreadLocal<WebDriverWait> waitThreadLocal = new ThreadLocal<>();
+    /** ThreadLocal para armazenar a instância do RequestSpecification.
+     * Garante que cada thread tenha sua própria configuração de requisição.
+     */
     private static final ThreadLocal<RequestSpecification> requestSpecThreadLocal = new ThreadLocal<>();
+    /** ThreadLocal para armazenar a última Response da API.
+     * Permite que o step 'Then' acesse a resposta da requisição feita no step 'When'.
+     */
     private static final ThreadLocal<Response> responseThreadLocal = new ThreadLocal<>();
-
 
     /**
      * Retorna a instância atual do {@link RequestSpecification} para a thread.

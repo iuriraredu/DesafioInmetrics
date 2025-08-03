@@ -2,7 +2,8 @@ package br.com.inmetrics.iuriraredu.steps.web;
 
 import br.com.inmetrics.iuriraredu.web.actions.SearchResultActions;
 import io.cucumber.java.pt.Entao;
-import org.junit.jupiter.api.Assertions;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SearchResultStepdefs {
 
@@ -14,6 +15,6 @@ public class SearchResultStepdefs {
 
     @Entao("^sou apresentado aos \"([^\"]*)\"$")
     public void souApresentadoAoProduto(String product) {
-        Assertions.assertEquals(product, this.searchResultActions.getProductName(product));
+        assertEquals(product, this.searchResultActions.getProductName(product));
     }
 }

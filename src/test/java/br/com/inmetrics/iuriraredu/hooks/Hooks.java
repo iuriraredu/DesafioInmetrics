@@ -9,10 +9,8 @@ import io.cucumber.java.Scenario;
 import java.io.File;
 import java.io.IOException;
 
-import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPropertiesValue;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.implicitlyWait;
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForPageLoad;
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 /**
@@ -52,6 +50,7 @@ public class Hooks extends BaseTest {
      */
     @After(value = "@WEB")
     public void finishWebApplication(Scenario scenario) {
+        implicitlyWait(getDriver());
         try {
             String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
             if (screenshotPath != null) {

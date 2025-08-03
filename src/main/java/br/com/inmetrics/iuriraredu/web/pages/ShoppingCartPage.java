@@ -16,8 +16,8 @@ public class ShoppingCartPage {
     @FindBy(xpath = "//label[@class='roboto-regular productName ng-binding']")
     private WebElement productName;
 
-//    @FindBy(xpath = "//button[parent::td[@colspan='5']]")
-//    @FindBy(xpath = "//button[@id='checkOutPopUp' and parent::td]")
+    //    @FindBy(xpath = "//button[parent::td[@colspan='5']]")
+    //    @FindBy(xpath = "//button[@id='checkOutPopUp' and parent::td]")
     @FindBy(xpath = "//button[@id='checkOutButton' and parent::td]")
     private WebElement checkoutButton;
 

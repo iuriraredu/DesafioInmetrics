@@ -9,12 +9,18 @@ import lombok.Getter;
 
 @Getter
 public class HomePage {
-    public HomePage(WebDriver driver){
+    public HomePage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
 
+    @FindBy(xpath = "//a[@class='ng-scope']")
+    private WebElement homeLink;
+
     @FindBy(xpath = "//a[@title='SEARCH']")
     private WebElement searchBtn;
+
+    @FindBy(xpath = "//input[@name='mobile_search']")
+    private WebElement mobileSearchInput;
 
     @FindBy(xpath = "//input[@id='autoComplete']")
     private WebElement searchInput;
