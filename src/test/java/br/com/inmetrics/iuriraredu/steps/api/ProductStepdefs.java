@@ -1,38 +1,71 @@
 package br.com.inmetrics.iuriraredu.steps.api;
 
 import br.com.inmetrics.iuriraredu.api.ApiService;
+import br.com.inmetrics.iuriraredu.models.BearerToken;
+import br.com.inmetrics.iuriraredu.models.User;
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
+import com.github.javafaker.Faker;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
 import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ProductStepdefs extends BaseTest {
 
     private final ApiService apiService = new ApiService();
+    private final Faker faker = new Faker(new Locale("pt-BR"));
     private JsonPath jsonPath;
     private String bodyResponse;
+    private BearerToken bearerToken;
     private Map<String, Object> category;
+    private String fileName;
 
 
     @Dado("que busco pelo nome {string} sem o parâmetro {string} configurado")
     public void queBuscoPeloNomeSemOParametroConfigurado(String productName, String arg1) {
-        setResponse(apiService.searchProducts(productName, null));
+        setResponse(apiService.searchProducts(productName, null, null));
     }
 
     @Dado("que busco pelo nome {string} com parâmetro {string} configurado para {int}")
     public void queBuscoPeloNomeComParametroConfiguradoPara(String productName, String arg1, int quantity) {
-        setResponse(apiService.searchProducts(productName, quantity));
+        setResponse(apiService.searchProducts(productName, quantity, null));
     }
 
     @Dado("que busco pelo nome {string}")
     public void queBuscoPeloNome(String productName) {
-        setResponse(apiService.searchProducts(productName, "notFound"));
+        setResponse(apiService.searchProducts(productName, null, "notFound"));
+    }
+
+    @Dado("que eu tenho um token de administrador válido")
+    public void queEuTenhoUmTokenDeAdministradorValido() {
+        User user = createNewUser();
+        registerUser(user);
+        bearerToken = getBearerToken(user);
+    }
+
+    private BearerToken getBearerToken(User user) {
+        return apiService.postLogin(user);
+    }
+
+    @Dado("um arquivo de imagem {string} para upload")
+    public void umArquivoDeImagemParaUpload(String fileName) {
+        this.fileName = fileName;
     }
 
     @Quando("envio uma requisição GET")
@@ -49,6 +82,11 @@ public class ProductStepdefs extends BaseTest {
         bodyResponse = getResponse().getBody().asString();
     }
 
+    @Quando("eu envio a imagem para o produto com ID {int}")
+    public void euEnvioAImagemParaOProdutoComID(int productId) {
+        setResponse(apiService.postUploadImage(bearerToken, fileName, "red", productId));
+    }
+
     @Entao("devo receber status code {int}")
     public void devoReceberStatusCode(int expectedStatusCode) {
         assertEquals(expectedStatusCode, getResponse().getStatusCode());
@@ -56,7 +94,7 @@ public class ProductStepdefs extends BaseTest {
 
     @Entao("apenas {int} categoria deve ser retornada")
     public void apenasCategoriaDeveSerRetornada(int expectedCount) {
-        assertEquals(expectedCount,  jsonPath.getList("$").size());
+        assertEquals(expectedCount, jsonPath.getList("$").size());
     }
 
     @Entao("apenas {int} produto deve ser retornado")
@@ -77,9 +115,7 @@ public class ProductStepdefs extends BaseTest {
         validaCategoria(category);
 
         // Valida estrutura do produto
-        for (Map<String, Object> product : (List<Map<String, Object>>) category.get("products")) {
-            validarProduto(product, category);
-        }
+        validarProduto();
 
     }
 
@@ -92,36 +128,86 @@ public class ProductStepdefs extends BaseTest {
     }
 
     private void validaCategoria(Map<String, Object> category) {
-        assertTrue(category.containsKey("categoryId"));
-        assertTrue(category.containsKey("categoryName"));
-        assertTrue(category.containsKey("categoryImageId"));
-        assertTrue(category.containsKey("products"));
+        assertNotNull("Categoria não pode ser nula", category);
 
-        assertTrue(category.get("categoryId") instanceof Number);
-        assertTrue(category.get("categoryName") instanceof String);
-        assertFalse(((String) category.get("categoryName")).isEmpty());
-        assertTrue(category.get("categoryImageId") instanceof String);
-        assertFalse(((String) category.get("categoryImageId")).isEmpty());
+        assertThat(category.keySet(), containsInAnyOrder("categoryId", "categoryName", "categoryImageId", "products"));
+
+        assertTrue("categoryId deve ser numérico", category.get("categoryId") instanceof Number);
+        assertFalse("categoryName vazio", ((String) category.get("categoryName")).isEmpty());
+        assertFalse("categoryImageId vazio", ((String) category.get("categoryImageId")).isEmpty());
     }
 
-    private void validarProduto(Map<String, Object> product, Map<String, Object> category) {
-        assertTrue(product.containsKey("productId"));
-        assertTrue(product.containsKey("categoryId"));
-        assertTrue(product.containsKey("productName"));
-        assertTrue(product.containsKey("price"));
-        assertTrue(product.containsKey("imageUrl"));
+    @SuppressWarnings("unchecked")
+    private List<Map<String, Object>> getProductsFromCategory() {
+        return (List<Map<String, Object>>) category.get("products");
+    }
 
-        assertTrue(product.get("productId") instanceof Number);
-        assertTrue(product.get("categoryId") instanceof Number);
-        assertEquals(category.get("categoryId"), product.get("categoryId")); // Valida consistência
 
-        assertTrue(product.get("productName") instanceof String);
-        assertFalse(((String) product.get("productName")).isEmpty());
+    private void validarProduto() {
+        List<Map<String, Object>> products = getProductsFromCategory();
+        assertFalse("Lista de produtos vazia", products.isEmpty());
 
-        assertTrue(product.get("price") instanceof Number);
-        assertTrue(((Number) product.get("price")).doubleValue() > 0);
+        products.forEach(product -> {
+            assertThat(product.keySet(), containsInAnyOrder("productId", "categoryId", "productName", "price", "imageUrl"));
+            assertEquals("categoryId inconsistente", category.get("categoryId"), product.get("categoryId"));
+            assertFalse("productName vazio", ((String) product.get("productName")).isEmpty());
+            assertTrue("preço inválido", ((Number) product.get("price")).doubleValue() > 0);
+            assertFalse("imageUrl vazio", ((String) product.get("imageUrl")).isEmpty());
+        });
+    }
 
-        assertTrue(product.get("imageUrl") instanceof String);
-        assertFalse(((String) product.get("imageUrl")).isEmpty());
+    private User createNewUser() {
+        return new User(
+                faker.address().streetName(),
+                faker.address().cityName(),
+                faker.name().firstName(),
+                faker.name().lastName(),
+                faker.phoneNumber().cellPhone(),
+                faker.address().stateAbbr(),
+                faker.address().zipCode()
+        );
+    }
+
+    private void registerUser(User user) {
+        Response response = apiService.postCreateUserAccount(user);
+        user.setUserId(response.jsonPath().getString("response.userId"));
+    }
+
+    @Entao("o corpo da resposta deve conter os campos:")
+    public void oCorpoDaRespostaDeveConterOsCampos(Map<String, String> camposEsperados) {
+        jsonPath = getResponse().jsonPath();
+
+        camposEsperados.forEach((campo, valorEsperado) -> {
+            // Remove aspas se existirem
+            String valorTratado = valorEsperado.replace("\"", "").trim();
+
+            // Validação especial para cada tipo de campo
+            switch (campo) {
+                case "success":
+                    assertThat("O campo 'success' deve ser true",
+                            jsonPath.getBoolean(campo), is(Boolean.parseBoolean(valorTratado)));
+                    break;
+
+                case "id":
+                    assertThat("O ID do produto deve ser 83",
+                            jsonPath.getInt(campo), is(Integer.parseInt(valorTratado)));
+                    break;
+
+                case "imageId":
+                    assertThat("O imageId deve começar com 'custom_image_'",
+                            jsonPath.getString(campo), startsWith(valorTratado));
+                    break;
+
+                case "reason":
+                case "imageColor":
+                    assertThat("Valor incorreto para " + campo,
+                            jsonPath.getString(campo), equalTo(valorTratado));
+                    break;
+
+                default:
+                    fail("Campo não mapeado: " + campo);
+            }
+        });
+
     }
 }

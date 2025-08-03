@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,5 +47,16 @@ public class FileManager {
             System.err.println("O driver não suporta tirar screenshots: " + e.getMessage());
         }
         return filePath; // Retorna o caminho ou null em caso de falha
+    }
+
+    public static File getImageFile(String fileName) {
+        // Caminho relativo a partir da raiz do projeto
+        String imagePath = Paths.get("src", "test", "resources", "images", fileName).toString();
+        File file = new File(imagePath);
+
+        if (!file.exists()) {
+            throw new RuntimeException("Arquivo não encontrado: " + file.getAbsolutePath());
+        }
+        return file;
     }
 }

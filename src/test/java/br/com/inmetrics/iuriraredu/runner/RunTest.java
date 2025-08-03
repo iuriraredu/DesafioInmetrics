@@ -25,7 +25,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
         },
         monochrome = true,
         snippets = CAMELCASE,
-        tags = "@api"
+        tags = "@AtualizarImagem"
 )
 public class RunTest {
 }
