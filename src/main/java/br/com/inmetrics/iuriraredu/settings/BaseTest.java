@@ -8,8 +8,12 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -17,6 +21,8 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+
+import java.util.List;
 
 /**
  * Classe base para testes automatizados utilizando Selenium WebDriver.
@@ -111,18 +117,47 @@ public abstract class BaseTest {
      * @throws IllegalArgumentException Se o navegador não for suportado
      */
     private WebDriver createDriver(String browser) {
+        boolean isHeadless = Boolean.parseBoolean(System.getProperty("headless", "true"));
+
         return switch (browser.toLowerCase()) {
             case "chrome" -> {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments(
+                        isHeadless ? "--headless=new" : "--start-maximized",
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--window-size=1920,1080",
+                        "--remote-allow-origins=*"
+                );
+                // Configurações específicas do Chrome
+                options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
                 WebDriverManager.chromedriver().setup();
-                yield new ChromeDriver();
+                yield new ChromeDriver(options);
             }
             case "edge" -> {
+                EdgeOptions options = new EdgeOptions();
+                options.addArguments(
+                        isHeadless ? "--headless" : "--start-maximized",
+                        "--no-sandbox",
+                        "--disable-dev-shm-usage",
+                        "--disable-gpu",
+                        "--window-size=1920,1080"
+                );
                 WebDriverManager.edgedriver().setup();
-                yield new EdgeDriver();
+                yield new EdgeDriver(options);
             }
             case "firefox" -> {
+                FirefoxOptions options = new FirefoxOptions();
+                options.addArguments(
+                        isHeadless ? "--headless" : "--start-maximized",
+                        "--width=1920",
+                        "--height=1080"
+                );
+                // Configurações específicas do Firefox
+                options.setLogLevel(FirefoxDriverLogLevel.ERROR);
                 WebDriverManager.firefoxdriver().setup();
-                yield new FirefoxDriver();
+                yield new FirefoxDriver(options);
             }
             default -> throw new IllegalArgumentException("Navegador não suportado: " + browser);
         };
