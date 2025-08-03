@@ -34,6 +34,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAVEN_OPTS: -Xmx1024m -XX:+TieredCompilation -XX:TieredStopAtLevel=1
+          
+      - name: Ensure Reports Directory Exists
+        run: mkdir -p target/cucumber-reports/  # Cria se não existir
+        if: always()
 
       - name: Upload Cucumber HTML Report
         uses: actions/upload-artifact@v4
