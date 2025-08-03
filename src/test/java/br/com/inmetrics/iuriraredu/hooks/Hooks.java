@@ -3,6 +3,7 @@ package br.com.inmetrics.iuriraredu.hooks;
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import br.com.inmetrics.iuriraredu.utils.FileManager;
 import io.cucumber.java.After;
+import io.cucumber.java.AfterStep;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
@@ -33,13 +34,31 @@ public class Hooks extends BaseTest {
      * Inicializa o navegador antes de cenários marcados com {@code @web}.
      */
     @Before(value = "@WEB")
-    public void initWebApplication() {
+    public void initWebApplication(Scenario scenario) {
         System.out.println("🔧 Iniciando o cenário de teste...");
         super.browserSetUp(
                 getPropertiesValue("BROWSER"),
                 getPropertiesValue("BASEURL")
         );
         implicitlyWait(getDriver());
+    }
+
+    @AfterStep(value = "@WEB")
+    public void afterStep(Scenario scenario) {
+        try {
+            String screenshotPath = FileManager.takeScreenShot(getDriver(), scenario.getName());
+            if (screenshotPath != null) {
+                scenario.attach(readFileToByteArray(
+                                new File(screenshotPath)),
+                        "image/png",
+                        "Screenshot"
+                );
+            } else {
+                System.err.println("Screenshot não foi capturado.");
+            }
+        } catch (IOException e) {
+            System.err.println("Erro ao capturar screenshot: " + e.getMessage());
+        }
     }
 
     /**

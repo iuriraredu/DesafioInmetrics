@@ -2,10 +2,8 @@ package br.com.inmetrics.iuriraredu.web.actions;
 
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import br.com.inmetrics.iuriraredu.web.pages.ProductPage;
-import org.openqa.selenium.WebElement;
 
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.tryToClick;
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForClickable;
 
 /**
  * Classe responsável por ações relacionadas à página do produto.
@@ -33,8 +31,8 @@ public class ProductActions extends BaseTest {
      * @return o nome do produto como uma String.
      */
     public void clickColorButton(String color) {
-        if (!tryToClick(getDriver(), getWait(), productPage.getColorBunnyBtn(color, getDriver())))
-            tryToClick(getDriver(), getWait(), productPage.getColorRabbitBtn(color, getDriver()));
+        if (!tryToClick(getDriver(), getWait(), this.productPage.getColorBunnyBtn(color, getDriver())))
+            tryToClick(getDriver(), getWait(), this.productPage.getColorRabbitBtn(color, getDriver()));
     }
 
     /**
@@ -42,7 +40,7 @@ public class ProductActions extends BaseTest {
      * Utiliza um método utilitário para tentar clicar no botão.
      */
     public void clickAddToCartButton() {
-        tryToClick(getDriver(), getWait(), productPage.getAddToCartBtn());
+        tryToClick(getDriver(), getWait(), this.productPage.getAddToCartBtn());
     }
 
     /**
@@ -50,7 +48,7 @@ public class ProductActions extends BaseTest {
      * Utiliza um método utilitário para esperar que o botão esteja clicável antes de clicar.
      */
     public void clickCartButton() {
-        WebElement cartBtn = waitForClickable(getWait(), productPage.getCartBtn());
-        cartBtn.click();
+        tryToClick(getDriver(), getWait(), this.productPage.getCartBtn());
+
     }
 }

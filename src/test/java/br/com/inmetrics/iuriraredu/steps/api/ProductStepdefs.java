@@ -3,7 +3,6 @@ package br.com.inmetrics.iuriraredu.steps.api;
 import br.com.inmetrics.iuriraredu.api.ApiService;
 import br.com.inmetrics.iuriraredu.models.BearerToken;
 import br.com.inmetrics.iuriraredu.models.User;
-import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import com.github.javafaker.Faker;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.Entao;
@@ -26,9 +25,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ProductStepdefs extends BaseTest {
+public class ProductStepdefs extends ApiService {
 
-    private final ApiService apiService = new ApiService();
     private final Faker faker = new Faker(new Locale("pt-BR"));
     private JsonPath jsonPath;
     private String bodyResponse;
@@ -39,17 +37,17 @@ public class ProductStepdefs extends BaseTest {
 
     @Dado("que busco pelo nome {string} sem o parâmetro {string} configurado")
     public void queBuscoPeloNomeSemOParametroConfigurado(String productName, String arg1) {
-        setResponse(apiService.searchProducts(productName, null, null));
+        setResponse(super.searchProducts(productName, null, null));
     }
 
     @Dado("que busco pelo nome {string} com parâmetro {string} configurado para {int}")
     public void queBuscoPeloNomeComParametroConfiguradoPara(String productName, String arg1, int quantity) {
-        setResponse(apiService.searchProducts(productName, quantity, null));
+        setResponse(super.searchProducts(productName, quantity, null));
     }
 
     @Dado("que busco pelo nome {string}")
     public void queBuscoPeloNome(String productName) {
-        setResponse(apiService.searchProducts(productName, null, "notFound"));
+        setResponse(super.searchProducts(productName, null, "notFound"));
     }
 
     @Dado("que eu tenho um token de administrador válido")
@@ -60,7 +58,7 @@ public class ProductStepdefs extends BaseTest {
     }
 
     private BearerToken getBearerToken(User user) {
-        return apiService.postLogin(user);
+        return super.postLogin(user);
     }
 
     @Dado("um arquivo de imagem {string} para upload")
@@ -84,7 +82,7 @@ public class ProductStepdefs extends BaseTest {
 
     @Quando("eu envio a imagem para o produto com ID {int}")
     public void euEnvioAImagemParaOProdutoComID(int productId) {
-        setResponse(apiService.postUploadImage(bearerToken, fileName, "red", productId));
+        setResponse(super.postUploadImage(bearerToken, fileName, "red", productId));
     }
 
     @Entao("devo receber status code {int}")
@@ -169,7 +167,7 @@ public class ProductStepdefs extends BaseTest {
     }
 
     private void registerUser(User user) {
-        Response response = apiService.postCreateUserAccount(user);
+        Response response = super.postCreateUserAccount(user);
         user.setUserId(response.jsonPath().getString("response.userId"));
     }
 
@@ -208,6 +206,5 @@ public class ProductStepdefs extends BaseTest {
                     fail("Campo não mapeado: " + campo);
             }
         });
-
     }
 }

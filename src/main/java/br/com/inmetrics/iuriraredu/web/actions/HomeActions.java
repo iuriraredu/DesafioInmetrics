@@ -48,8 +48,8 @@ public class HomeActions extends BaseTest {
      */
     public void sendTextOnSearchInput(String text) {
         waitForPageLoad(getWait(), getDriver(), getGlobalTimeout());
-        tryToSendKeys(getDriver(), getWait(), this.homePage.getSearchInput(), text + Keys.ENTER);
         tryToSendKeys(getDriver(), getWait(), this.homePage.getMobileSearchInput(), text + Keys.ENTER);
+        tryToSendKeys(getDriver(), getWait(), this.homePage.getSearchInput(), text + Keys.ENTER);
     }
 
     /**

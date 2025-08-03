@@ -16,7 +16,7 @@ import static io.restassured.RestAssured.given;
  * Classe ApiService que contém métodos para interagir com a API do sistema.
  * Inclui métodos para buscar produtos, criar usuários, realizar login e fazer upload de imagens.
  */
-public class ApiService extends BaseTest {
+public abstract class ApiService extends BaseTest {
     /**
      * Método para buscar produtos com base no nome e quantidade por categoria.
      * Se o parâmetro notFound for fornecido, utiliza um endpoint específico.
