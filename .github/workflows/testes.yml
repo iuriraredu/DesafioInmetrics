@@ -49,6 +49,7 @@ jobs:
 
       - name: Upload Cucumber JSON Report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: cucumber-json-report
           path: target/cucumber-reports/cucumber.json
@@ -56,6 +57,7 @@ jobs:
 
       - name: Upload JUnit Reports
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: junit-reports
           path: |
@@ -65,8 +67,8 @@ jobs:
         continue-on-error: true
 
       - name: Publicar Resultados dos Testes
-        if: always()
         uses: dorny/test-reporter@v1
+        if: always()
         with:
           name: Test Results
           path: target/cucumber-reports/junit-report.xml
