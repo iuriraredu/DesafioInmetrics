@@ -6,7 +6,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
-import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.jsClick;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.tryToClick;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.tryToSendKeys;
 import static br.com.inmetrics.iuriraredu.utils.SeleniumUtils.waitForClickable;
@@ -37,8 +36,8 @@ public class HomeActions extends BaseTest {
      */
     public void clickOnSearchBtn() {
         waitForPageLoad(getWait(), getDriver(), getGlobalTimeout());
-        if (!tryToClick(getDriver(), getWait(), this.homePage.getSearchBtn()))
-            tryToClick(getDriver(), getWait(), this.homePage.getMobileSearchInput());
+        tryToClick(getDriver(), getWait(), this.homePage.getSearchBtn());
+        tryToClick(getDriver(), getWait(), this.homePage.getMobileSearchInput());
     }
 
     /**
@@ -49,8 +48,8 @@ public class HomeActions extends BaseTest {
      */
     public void sendTextOnSearchInput(String text) {
         waitForPageLoad(getWait(), getDriver(), getGlobalTimeout());
-        if (!tryToSendKeys(getDriver(), getWait(), this.homePage.getSearchInput(), text + Keys.ENTER))
-            tryToSendKeys(getDriver(), getWait(), this.homePage.getMobileSearchInput(), text + Keys.ENTER);
+        tryToSendKeys(getDriver(), getWait(), this.homePage.getSearchInput(), text + Keys.ENTER);
+        tryToSendKeys(getDriver(), getWait(), this.homePage.getMobileSearchInput(), text + Keys.ENTER);
     }
 
     /**
@@ -67,8 +66,7 @@ public class HomeActions extends BaseTest {
      * Fecha o campo de busca clicando no botão de fechar.
      */
     public void closeSearch() {
-        WebElement buttonCloseSearch = waitForClickable(getWait(), this.homePage.getCloseSearchBtn());
-        jsClick(getDriver(), buttonCloseSearch);
+        tryToClick(getDriver(), getWait(), this.homePage.getCloseSearchBtn());
     }
 
     /**

@@ -1,11 +1,9 @@
 package br.com.inmetrics.iuriraredu.settings;
 
-import br.com.inmetrics.iuriraredu.utils.ConfigManager;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.openqa.selenium.NoSuchElementException;
@@ -16,15 +14,16 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.util.List;
-
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
+import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPropertiesValue;
+import static io.restassured.http.ContentType.JSON;
 import static java.lang.Boolean.parseBoolean;
+import static java.util.List.of;
+import static org.openqa.selenium.firefox.FirefoxDriverLogLevel.ERROR;
 
 /**
  * Classe base para testes automatizados utilizando Selenium WebDriver.
@@ -86,7 +85,7 @@ public abstract class BaseTest {
     protected void apiSetUp(String baseUrl) {
         RequestSpecBuilder builder = new RequestSpecBuilder();
         builder.setBaseUri(baseUrl); // Pega a URL base do seu gerenciador de configs
-        builder.setContentType(ContentType.JSON);
+        builder.setContentType(JSON);
 
         // Adiciona logging para ver o que está sendo enviado e recebido. Ótimo para debug.
         builder.addFilter(new RequestLoggingFilter());
@@ -130,8 +129,7 @@ public abstract class BaseTest {
      * @throws IllegalArgumentException Se o navegador não for suportado
      */
     private WebDriver createDriver(String browser) {
-        boolean isHeadless = parseBoolean(ConfigManager.getPropertiesValue("HEADLESS_MODE"));
-
+        boolean isHeadless = parseBoolean(getPropertiesValue("HEADLESS_MODE"));
         return switch (browser.toLowerCase()) {
             case "chrome" -> {
                 ChromeOptions options = new ChromeOptions();
@@ -144,7 +142,7 @@ public abstract class BaseTest {
                         "--remote-allow-origins=*"
                 );
                 // Configurações específicas do Chrome
-                options.setExperimentalOption("excludeSwitches", List.of("enable-automation"));
+                options.setExperimentalOption("excludeSwitches", of("enable-automation"));
                 WebDriverManager.chromedriver().setup();
                 yield new ChromeDriver(options);
             }
@@ -155,7 +153,8 @@ public abstract class BaseTest {
                         "--no-sandbox",
                         "--disable-dev-shm-usage",
                         "--disable-gpu",
-                        "--window-size=1920,1080"
+                        "--window-size=1920,1080",
+                        "--remote-allow-origins=*"
                 );
                 WebDriverManager.edgedriver().setup();
                 yield new EdgeDriver(options);
@@ -168,7 +167,7 @@ public abstract class BaseTest {
                         "--height=1080"
                 );
                 // Configurações específicas do Firefox
-                options.setLogLevel(FirefoxDriverLogLevel.ERROR);
+                options.setLogLevel(ERROR);
                 WebDriverManager.firefoxdriver().setup();
                 yield new FirefoxDriver(options);
             }

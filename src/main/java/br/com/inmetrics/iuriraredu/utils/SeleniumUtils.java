@@ -69,9 +69,9 @@ public class SeleniumUtils {
      * @throws org.openqa.selenium.TimeoutException Se a página não carregar completamente dentro do tempo limite.
      */
     public static void waitForPageLoad(WebDriverWait wait, WebDriver driver, Duration timeout) {
-        wait.ignoring(StaleElementReferenceException.class).until(
-                webDriver -> ((JavascriptExecutor) webDriver)
-                        .executeScript("return document.readyState").equals("complete")
+        wait.ignoring(StaleElementReferenceException.class)
+                .until(webDriver -> ((JavascriptExecutor) driver)
+                .executeScript("return document.readyState").equals("complete")
         );
     }
 
