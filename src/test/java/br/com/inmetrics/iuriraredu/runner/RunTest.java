@@ -6,6 +6,33 @@ import org.junit.runner.RunWith;
 
 import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
 
+/**
+ * Runner de testes automatizados utilizando Cucumber com JUnit.
+ *
+ * <p>Responsável por:</p>
+ * <ul>
+ *   <li>Configurar os diretórios de features para testes de API e Web</li>
+ *   <li>Definir os pacotes de step definitions e hooks</li>
+ *   <li>Gerar relatórios nos formatos HTML, JSON e JUnit</li>
+ *   <li>Executar apenas cenários marcados com a tag <b>@AdvantageShopping</b></li>
+ *   <li>Utilizar snippets no padrão CamelCase</li>
+ *   <li>Exibir saída dos testes de forma legível (monochrome)</li>
+ * </ul>
+ *
+
+ * <h3>Tags disponiveis:</h3>
+ * <ul>
+ *     <li><b>@AdvantageShopping</b> - Executa os testes relacionados ao site Advantage Shopping</li>
+ *     <li><b>@Todos</b> - Executa todos os testes disponíveis</li>
+ *     <li><b>@api</b> - Executa os testes de API</li>
+ *     <li><b>@web</b> - Executa os testes de interface web</li>
+ *     <li><b>@CarrinhoDeCompras</b> - Executa os testes relacionados ao Carrinho De Compras
+ *     <li><b>@AtualizarImagem</b> - Executa os testes relacionados a atualizar imagem de produtos por API</li>
+ *     <li><b>@BuscarProdutos</b> - Executa os testes relacionados a busca de produtos por API </li>
+ * </ul>
+ *
+ * <p>Esta classe deve permanecer vazia, servindo apenas como ponto de entrada para o JUnit executar os testes do Cucumber.</p>
+ */
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
@@ -25,7 +52,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
         },
         monochrome = true,
         snippets = CAMELCASE,
-        tags = "@AtualizarImagem"
+        tags = "@AdvantageShopping"
 )
 public class RunTest {
 }
