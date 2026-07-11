@@ -68,8 +68,35 @@ public class Hooks extends BaseTest {
      */
     @After(value = "@WEB")
     public void finishWebApplication(Scenario scenario) {
-        super.browserTearDown();
+        super.driverTearDown();
         System.out.println("🧹 Finalizando o cenário " + scenario.getName() + "...");
+    }
+
+    /**
+     * Inicializa o Appium antes de cenários marcados com @MOBILE.
+     */
+    @Before(value = "@MOBILE")
+    public void initMobileApplication(Scenario scenario) {
+        System.out.println("📱 Iniciando o cenário mobile: " + scenario.getName());
+        super.mobileSetUp();
+        implicitlyWait(getDriver());
+    }
+
+    /**
+     * Captura e anexa um screenshot após cada passo do @MOBILE.
+     */
+    @AfterStep(value = "@MOBILE")
+    public void afterStepMobile(Scenario scenario) {
+        afterStep(scenario);
+    }
+
+    /**
+     * Finaliza o aplicativo após os testes.
+     */
+    @After(value = "@MOBILE")
+    public void finishMobileApplication(Scenario scenario) {
+        super.driverTearDown();
+        System.out.println("🧹 Finalizando o cenário mobile: " + scenario.getName());
     }
 
     /**

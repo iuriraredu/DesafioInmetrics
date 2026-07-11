@@ -26,9 +26,16 @@
         <rest-assured.version>5.5.5</rest-assured.version>
         <jackson-databind.version>2.19.2</jackson-databind.version>
         <javafaker.version>1.0.2</javafaker.version>
+        <appium.version>9.3.0</appium.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>${appium.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.github.sarxos</groupId>
             <artifactId>webcam-capture</artifactId>

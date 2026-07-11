@@ -16,6 +16,10 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getGlobalTimeout;
 import static br.com.inmetrics.iuriraredu.utils.ConfigManager.getPollingInterval;
@@ -187,6 +191,28 @@ public abstract class BaseTest {
     }
 
     /**
+     * Cria uma instância do AndroidDriver para testes Mobile.
+     */
+    private WebDriver createMobileDriver() {
+        try {
+            UiAutomator2Options options = new UiAutomator2Options();
+            options.setPlatformName("Android");
+            options.setAutomationName("UiAutomator2");
+            options.setDeviceName(getPropertiesValue("DEVICE_NAME"));
+
+            // Pega o caminho absoluto da sua máquina até a pasta do projeto + caminho do APK
+            String appAbsolutePath = System.getProperty("user.dir") + getPropertiesValue("APP_PATH");
+            options.setApp(appAbsolutePath);
+
+            // Conecta no servidor do Appium que estará rodando no seu terminal
+            return new AndroidDriver(new URL("http://127.0.0.1:4723"), options);
+
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Erro ao conectar com o Servidor do Appium", e);
+        }
+    }
+
+    /**
      * Cria uma instância de {@link WebDriverWait} com timeout global e polling customizado.
      * Ignora exceções comuns de elementos dinâmicos.
      *
@@ -213,10 +239,19 @@ public abstract class BaseTest {
     }
 
     /**
+     * Inicializa o dispositivo Mobile e configura o driver e WebDriverWait para a thread atual.
+     */
+    protected void mobileSetUp() {
+        WebDriver driver = createMobileDriver();
+        driverThreadLocal.set(driver);
+        waitThreadLocal.set(createWebDriverWait(driver));
+    }
+
+    /**
      * Finaliza o navegador e remove as instâncias dos drivers das threads.
      * Libera recursos utilizados pelo WebDriver.
      */
-    protected void browserTearDown() {
+    protected void driverTearDown() {
         if (getDriver() != null) {
             getDriver().quit();
             driverThreadLocal.remove();
