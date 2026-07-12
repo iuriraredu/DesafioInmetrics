@@ -14,7 +14,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
  *   <li>Configurar os diretórios de features para testes de API e Web</li>
  *   <li>Definir os pacotes de step definitions e hooks</li>
  *   <li>Gerar relatórios nos formatos HTML, JSON e JUnit</li>
- *   <li>Executar apenas cenários marcados com a tag <b>@AdvantageShopping</b></li>
+ *   <li>Executar apenas cenários marcados com a tag <b>{@code @AdvantageShopping}</b></li>
  *   <li>Utilizar snippets no padrão CamelCase</li>
  *   <li>Exibir saída dos testes de forma legível (monochrome)</li>
  * </ul>
@@ -22,13 +22,14 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
 
  * <h3>Tags disponiveis:</h3>
  * <ul>
- *     <li><b>@AdvantageShopping</b> - Executa os testes relacionados ao site Advantage Shopping</li>
- *     <li><b>@All</b> - Executa todos os testes disponíveis</li>
- *     <li><b>@API</b> - Executa os testes de API</li>
- *     <li><b>@WEB</b> - Executa os testes de interface web</li>
- *     <li><b>@CarrinhoDeCompras</b> - Executa os testes relacionados ao Carrinho De Compras
- *     <li><b>@AtualizarImagem</b> - Executa os testes relacionados a atualizar imagem de produtos por API</li>
- *     <li><b>@BuscarProdutos</b> - Executa os testes relacionados a busca de produtos por API </li>
+ *     <li><b>{@code @AdvantageShopping}</b> - Executa os testes relacionados ao site Advantage Shopping</li>
+ *     <li><b>{@code @All}</b> - Executa todos os testes disponíveis</li>
+ *     <li><b>{@code @API}</b> - Executa os testes de API</li>
+ *     <li><b>{@code @WEB}</b> - Executa os testes de interface web</li>
+ *     <li><b>{@code @MOBILE}</b> - Executa os testes de interface mobile</li>
+ *     <li><b>{@code @CarrinhoDeCompras}</b> - Executa os testes relacionados ao Carrinho De Compras
+ *     <li><b>{@code @AtualizarImagem}</b> - Executa os testes relacionados a atualizar imagem de produtos por API</li>
+ *     <li><b>{@code @BuscarProdutos}</b> - Executa os testes relacionados a busca de produtos por API </li>
  * </ul>
  *
  * <p>Esta classe deve permanecer vazia, servindo apenas como ponto de entrada para o JUnit executar os testes do Cucumber.</p>
@@ -52,7 +53,7 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
         },
         monochrome = true,
         snippets = UNDERSCORE,
-        tags = "@WEB"
+        tags = "@API"
 )
 public class RunTest {
 }

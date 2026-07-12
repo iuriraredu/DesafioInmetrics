@@ -73,7 +73,7 @@ public class Hooks extends BaseTest {
     }
 
     /**
-     * Inicializa o Appium antes de cenários marcados com @MOBILE.
+     * Inicializa o Appium antes de cenários marcados com {@code @MOBILE}.
      */
     @Before(value = "@MOBILE")
     public void initMobileApplication(Scenario scenario) {
@@ -83,7 +83,7 @@ public class Hooks extends BaseTest {
     }
 
     /**
-     * Captura e anexa um screenshot após cada passo do @MOBILE.
+     * Captura e anexa um screenshot após cada passo do {@code @MOBILE}.
      */
     @AfterStep(value = "@MOBILE")
     public void afterStepMobile(Scenario scenario) {
@@ -91,7 +91,7 @@ public class Hooks extends BaseTest {
     }
 
     /**
-     * Finaliza o aplicativo após os testes.
+     * Finaliza o aplicativo após os testes {@code @MOBILE}.
      */
     @After(value = "@MOBILE")
     public void finishMobileApplication(Scenario scenario) {

@@ -14,22 +14,23 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lombok.version>1.18.38</lombok.version>
-        <selenium.version>4.34.0</selenium.version>
-        <junit.version>5.13.3</junit.version>
-        <cucumber.version>7.26.0</cucumber.version>
-        <webdrivermanager.version>6.2.0</webdrivermanager.version>
-        <commons-io.version>2.19.0</commons-io.version>
-        <annotations.version>26.0.2</annotations.version>
-        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.3.0</maven-surefire-plugin.version>
-        <rest-assured.version>5.5.5</rest-assured.version>
-        <jackson-databind.version>2.19.2</jackson-databind.version>
+        <lombok.version>1.18.46</lombok.version>
+        <selenium.version>4.45.0</selenium.version>
+        <junit.version>6.1.1</junit.version>
+        <cucumber.version>7.34.4</cucumber.version>
+        <webdrivermanager.version>6.3.4</webdrivermanager.version>
+        <commons-io.version>2.22.0</commons-io.version>
+        <annotations.version>26.1.0</annotations.version>
+        <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.6.0-M1</maven-surefire-plugin.version>
+        <rest-assured.version>6.0.0</rest-assured.version>
+        <jackson-databind.version>3.2.0</jackson-databind.version>
         <javafaker.version>1.0.2</javafaker.version>
-        <appium.version>9.3.0</appium.version>
+        <appium.version>10.1.1</appium.version>
     </properties>
 
     <dependencies>
+        <!-- Source: https://mvnrepository.com/artifact/io.appium/java-client -->
         <dependency>
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
@@ -66,9 +67,9 @@
         </dependency>
 
         <!-- JSON support -->
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <!-- Source: https://mvnrepository.com/artifact/tools.jackson.core/jackson-databind -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson-databind.version}</version>
         </dependency>

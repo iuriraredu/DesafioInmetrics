@@ -32,7 +32,7 @@ public class FileManager {
         String filePath = null; // Inicializa com null
         try {
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String folderPath = getReportsPath() + "/screenshots/" + LocalDate.now().toString();
+            String folderPath = getReportsPath() + "/screenshots/" + LocalDate.now();
             String extension = ".png"; // Define a extensão do arquivo
             filePath = folderPath + "/" + testName + "/" + timestamp + extension; // Atribui o caminho aqui
 
