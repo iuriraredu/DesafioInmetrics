@@ -1,10 +1,14 @@
 package br.com.inmetrics.iuriraredu.runner;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
-import org.junit.runner.RunWith;
+import org.junit.platform.suite.api.ConfigurationParameter;
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectClasspathResource;
+import org.junit.platform.suite.api.Suite;
 
-import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
+import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
+import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
+import static io.cucumber.junit.platform.engine.Constants.SNIPPET_TYPE_PROPERTY_NAME;
+import static io.cucumber.junit.platform.engine.Constants.FILTER_TAGS_PROPERTY_NAME;
 
 /**
  * Runner de testes automatizados utilizando Cucumber com JUnit.
@@ -34,26 +38,16 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.UNDERSCORE;
  *
  * <p>Esta classe deve permanecer vazia, servindo apenas como ponto de entrada para o JUnit executar os testes do Cucumber.</p>
  */
-@RunWith(Cucumber.class)
-@CucumberOptions(
-        features = {
-                "src/test/resources/features/api",
-                "src/test/resources/features/web"
-        },
-        glue = {
-                "br.com.inmetrics.iuriraredu.steps.api",
-                "br.com.inmetrics.iuriraredu.steps.web",
-                "br.com.inmetrics.iuriraredu.hooks"
-        },
-        plugin = {
-                "pretty",
-                "html:target/cucumber-reports/cucumber-reports.html",
-                "json:target/cucumber-reports/cucumber.json",
-                "junit:target/cucumber-reports/junit-report.xml"
-        },
-        monochrome = true,
-        snippets = UNDERSCORE,
-        tags = "@API"
-)
+
+@Suite
+@IncludeEngines("cucumber")
+@SelectClasspathResource("features") // Aponta para a pasta onde ficam seus arquivos .feature
+// Mapeia os pacotes onde estão os seus steps e hooks
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "br.com.inmetrics.iuriraredu.steps.api, br.com.inmetrics.iuriraredu.steps.web, br.com.inmetrics.iuriraredu.hooks")
+// Configura a geração dos relatórios (HTML, JSON, XML) e a exibição no console
+@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:target/cucumber-reports/cucumber-reports.html, json:target/cucumber-reports/cucumber.json, junit:target/cucumber-reports/junit-report.xml")
+// Define o padrão CamelCase para os snippets gerados automaticamente
+@ConfigurationParameter(key = SNIPPET_TYPE_PROPERTY_NAME, value = "camelcase")
+@ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "@WEB")
 public class RunTest {
 }

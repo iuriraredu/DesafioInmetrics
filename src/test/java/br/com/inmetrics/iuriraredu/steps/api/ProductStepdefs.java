@@ -14,16 +14,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ProductStepdefs extends ApiService {
 
@@ -54,11 +54,7 @@ public class ProductStepdefs extends ApiService {
     public void queEuTenhoUmTokenDeAdministradorValido() {
         User user = createNewUser();
         registerUser(user);
-        bearerToken = getBearerToken(user);
-    }
-
-    private BearerToken getBearerToken(User user) {
-        return super.postLogin(user);
+        bearerToken = super.postLogin(user);
     }
 
     @Dado("um arquivo de imagem {string} para upload")
@@ -68,16 +64,23 @@ public class ProductStepdefs extends ApiService {
 
     @Quando("envio uma requisição GET")
     public void envioUmaRequisicaoGET() {
-        if (getResponse().contentType().equals("application/json")) {
-            jsonPath = getResponse().jsonPath();
-            List<Map<String, Object>> categories = jsonPath.get();
-            category = categories.getFirst();
+        Response response = getResponse();
+        if (response != null && response.contentType() != null &&
+                response.contentType().contains("application/json")) {
+            jsonPath = response.jsonPath();
+            List<Map<String, Object>> categories = jsonPath.getList("");
+            if (categories != null && !categories.isEmpty()) {
+                category = categories.get(0);
+            }
         }
     }
 
     @Quando("envio uma requisição GET para uma URL incorreta")
     public void envioUmaRequisicaoGETParaUmaURLIncorreta() {
-        bodyResponse = getResponse().getBody().asString();
+        Response response = getResponse();
+        if (response != null) {
+            bodyResponse = response.getBody().asString();
+        }
     }
 
     @Quando("eu envio a imagem para o produto com ID {int}")
@@ -87,20 +90,27 @@ public class ProductStepdefs extends ApiService {
 
     @Entao("devo receber status code {int}")
     public void devoReceberStatusCode(int expectedStatusCode) {
-        assertEquals(expectedStatusCode, getResponse().getStatusCode());
+        Response response = getResponse();
+        assertNotNull(response, "Response não pode ser nula");
+        assertEquals(expectedStatusCode, response.getStatusCode());
     }
 
     @Entao("apenas {int} categoria deve ser retornada")
     public void apenasCategoriaDeveSerRetornada(int expectedCount) {
-        assertEquals(expectedCount, jsonPath.getList("$").size());
+        assertNotNull(jsonPath, "JsonPath não pode ser nulo");
+        List<Object> list = jsonPath.getList("$");
+        assertNotNull(list, "Lista não pode ser nula");
+        assertEquals(expectedCount, list.size());
     }
 
     @Entao("apenas {int} produto deve ser retornado")
     public void apenasProdutoDeveSerRetornada(int expectedCount) {
+        assertNotNull(category, "Categoria não pode ser nula");
+        @SuppressWarnings("unchecked")
         List<Map<String, Object>> products = (List<Map<String, Object>>) category.get("products");
+        assertNotNull(products, "Lista de produtos não pode ser nula");
         assertEquals(expectedCount, products.size());
     }
-
     @Entao("todos os produtos devem ser retornados")
     public void todosOsProdutosDevemSerRetornados() {
         List<Map<String, Object>> products = (List<Map<String, Object>>) category.get("products");
@@ -109,48 +119,68 @@ public class ProductStepdefs extends ApiService {
 
     @Entao("a estrutura da resposta deve ser válida")
     public void validarEstruturaDaResposta() {
-        // Valida estrutura da categoria
+        assertNotNull(category, "Categoria não pode ser nula");
         validaCategoria(category);
-
-        // Valida estrutura do produto
         validarProduto();
-
     }
 
     @Entao("resposta HTML de erro")
     public void respostaHTMLDeErro() {
-        assertTrue("Content-Type não é text/html", getResponse().contentType().contains("text/html"));
-        assertTrue("Título HTML de erro não encontrado", bodyResponse.contains("<title>HTTP Status 404"));
-        assertTrue("Mensagem 'The requested resource' ausente", bodyResponse.contains("The requested resource"));
-        assertTrue("Mensagem 'is not available' ausente", bodyResponse.contains("is not available"));
+        Response response = getResponse();
+        assertNotNull(response, "Response não pode ser nula");
+        assertTrue(response.contentType() != null && response.contentType().contains("text/html"), "Content-Type não é text/html");
+        assertNotNull(bodyResponse, "Body response não pode ser nulo");
+        assertTrue(bodyResponse.contains("<title>HTTP Status 404"), "Título HTML de erro não encontrado");
+        assertTrue(bodyResponse.contains("The requested resource"), "Mensagem 'The requested resource' ausente");
+        assertTrue(bodyResponse.contains("is not available"), "Mensagem 'is not available' ausente");
     }
 
     private void validaCategoria(Map<String, Object> category) {
-        assertNotNull("Categoria não pode ser nula", category);
+        assertNotNull(category, "Categoria não pode ser nula");
 
         assertThat(category.keySet(), containsInAnyOrder("categoryId", "categoryName", "categoryImageId", "products"));
 
-        assertTrue("categoryId deve ser numérico", category.get("categoryId") instanceof Number);
-        assertFalse("categoryName vazio", ((String) category.get("categoryName")).isEmpty());
-        assertFalse("categoryImageId vazio", ((String) category.get("categoryImageId")).isEmpty());
+        assertTrue(category.get("categoryId") instanceof Number, "categoryId deve ser numérico");
+
+        String categoryName = (String) category.get("categoryName");
+        assertNotNull(categoryName, "categoryName não pode ser nulo");
+        assertFalse(categoryName.isEmpty(), "categoryName vazio");
+
+        String categoryImageId = (String) category.get("categoryImageId");
+        assertNotNull(categoryImageId, "categoryImageId não pode ser nulo");
+        assertFalse(categoryImageId.isEmpty(), "categoryImageId vazio");
     }
 
     @SuppressWarnings("unchecked")
     private List<Map<String, Object>> getProductsFromCategory() {
-        return (List<Map<String, Object>>) category.get("products");
+        return (category == null) ?
+                List.of():
+                (List<Map<String, Object>>) category.get("products");
     }
-
 
     private void validarProduto() {
         List<Map<String, Object>> products = getProductsFromCategory();
-        assertFalse("Lista de produtos vazia", products.isEmpty());
+        assertNotNull(products, "Lista de produtos não pode ser nula");
+        assertFalse(products.isEmpty(), "Lista de produtos vazia");
 
         products.forEach(product -> {
+            assertNotNull(product, "Produto não pode ser nulo");
+
             assertThat(product.keySet(), containsInAnyOrder("productId", "categoryId", "productName", "price", "imageUrl"));
-            assertEquals("categoryId inconsistente", category.get("categoryId"), product.get("categoryId"));
-            assertFalse("productName vazio", ((String) product.get("productName")).isEmpty());
-            assertTrue("preço inválido", ((Number) product.get("price")).doubleValue() > 0);
-            assertFalse("imageUrl vazio", ((String) product.get("imageUrl")).isEmpty());
+
+            assertEquals(category.get("categoryId"), product.get("categoryId"), "categoryId inconsistente");
+
+            String productName = (String) product.get("productName");
+            assertNotNull(productName, "productName não pode ser nulo");
+            assertFalse(productName.isEmpty(), "productName vazio");
+
+            Number price = (Number) product.get("price");
+            assertNotNull(price, "price não pode ser nulo");
+            assertTrue(price.doubleValue() > 0, "preço inválido");
+
+            String imageUrl = (String) product.get("imageUrl");
+            assertNotNull(imageUrl, "imageUrl não pode ser nulo");
+            assertFalse(imageUrl.isEmpty(), "imageUrl vazio");
         });
     }
 
@@ -168,7 +198,13 @@ public class ProductStepdefs extends ApiService {
 
     private void registerUser(User user) {
         Response response = super.postCreateUserAccount(user);
-        user.setUserId(response.jsonPath().getString("response.userId"));
+        if (response != null) {
+            JsonPath responseJson = response.jsonPath();
+            if (responseJson != null) {
+                String userId = responseJson.getString("response.userId");
+                user.setUserId(userId);
+            }
+        }
     }
 
     @Entao("o corpo da resposta deve conter os campos:")

@@ -50,7 +50,7 @@ public abstract class BaseTest {
      */
     private static final ThreadLocal<RequestSpecification> requestSpecThreadLocal = new ThreadLocal<>();
     /** ThreadLocal para armazenar a última Response da API.
-     * Permite que o step 'Then' acesse a resposta da requisição feita no step 'When'.
+     * Permite que o ‘step’ 'Then' acesse a resposta da requisição feita no ‘step’ 'When'.
      */
     private static final ThreadLocal<Response> responseThreadLocal = new ThreadLocal<>();
 

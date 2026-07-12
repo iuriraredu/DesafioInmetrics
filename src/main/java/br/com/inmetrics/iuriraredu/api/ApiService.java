@@ -5,6 +5,8 @@ import br.com.inmetrics.iuriraredu.models.User;
 import br.com.inmetrics.iuriraredu.settings.BaseTest;
 import br.com.inmetrics.iuriraredu.utils.FileManager;
 import io.restassured.response.Response;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 import java.util.Objects;
@@ -17,6 +19,10 @@ import static io.restassured.RestAssured.given;
  * Inclui métodos para buscar produtos, criar usuários, realizar login e fazer upload de imagens.
  */
 public abstract class ApiService extends BaseTest {
+    @Getter @Setter
+    private Response response;
+
+
     /**
      * Método para buscar produtos com base no nome e quantidade por categoria.
      * Se o parâmetro notFound for fornecido, utiliza um endpoint específico.
@@ -31,12 +37,20 @@ public abstract class ApiService extends BaseTest {
                 ? getPropertiesValue("SEARCH_PRODUCTS_NOT_FOUND_ENDPOINT") + "/" + notFound
                 : getPropertiesValue("SEARCH_PRODUCTS_ENDPOINT");
 
-        return given()
-                .spec(getRequestSpec())
-                .queryParam("name", productName)
-                .queryParam("quantityPerEachCategory", quantity) // Só adiciona se não for null
-                .when()
-                .get(endpoint);
+        if (quantity != null) {
+            return given()
+                    .spec(getRequestSpec())
+                    .queryParam("name", productName)
+                    .queryParam("quantityPerEachCategory", quantity)
+                    .when()
+                    .get(endpoint);
+        } else {
+            return given()
+                    .spec(getRequestSpec())
+                    .queryParam("name", productName)
+                    .when()
+                    .get(endpoint);
+        }
     }
 
     /**
@@ -98,7 +112,10 @@ public abstract class ApiService extends BaseTest {
      */
     public Response postUploadImage(BearerToken bearerToken, String fileName, String color, int productId) {
         String endpoint = String.format("%s/%s/%s/%s",
-                getPropertiesValue("UPLOAD_IMAGE_ENDPOINT"), bearerToken.userId(), fileName, color);
+                getPropertiesValue("UPLOAD_IMAGE_ENDPOINT"),
+                bearerToken.userId(),
+                fileName,
+                color);
 
         return given()
                 .spec(getRequestSpec())
